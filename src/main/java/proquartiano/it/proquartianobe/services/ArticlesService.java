@@ -13,7 +13,10 @@ import proquartiano.it.proquartianobe.dao.IArticlesDAO;
 import proquartiano.it.proquartianobe.payload.articles.NewArticleDTO;
 import proquartiano.it.proquartianobe.entities.Article;
 import proquartiano.it.proquartianobe.exceptions.NotFoundException;
+import proquartiano.it.proquartianobe.repositories.AdminsRepository;
 import proquartiano.it.proquartianobe.repositories.ArticlesRepository;
+import proquartiano.it.proquartianobe.repositories.CategoriesRepository;
+import proquartiano.it.proquartianobe.repositories.TagsRepository;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -23,16 +26,23 @@ public class ArticlesService implements IArticlesDAO {
     @Autowired
     private ArticlesRepository articlesRepo;
     @Autowired
+    private AdminsRepository adminsRepo;
+    @Autowired
+    private CategoriesRepository categoriesRepo;
+    @Autowired
+    private TagsRepository tagsRepo;
+    @Autowired
     private Cloudinary cloudinary;
 
     @Override
     public Article save(NewArticleDTO body) {
         Article newArticle = new Article();
-        newArticle.setAuthor(body.author());
+        newArticle.setAuthor(adminsRepo.findById(body.authorId()).orElseThrow(() -> new NotFoundException(body.authorId())));
         newArticle.setContent(body.content());
         newArticle.setTitle(body.title());
-        newArticle.setCategories(body.categories());
-        newArticle.setTags(body.tags());
+        newArticle.setCategories(body.categoryIds().stream().map(categoryId -> categoriesRepo.findById(categoryId).orElseThrow(() -> new NotFoundException(categoryId))).toList());
+        newArticle.setTags(body.tagIds().stream().map(tagId -> tagsRepo.findById(tagId).orElseThrow(() -> new NotFoundException(tagId))).toList());
+//        newArticle.setTags(body.tagIds());
         return articlesRepo.save(newArticle);
     }
 
@@ -53,14 +63,14 @@ public class ArticlesService implements IArticlesDAO {
         articlesRepo.delete(found);
     }
 
-    @Override
-    public Article findByIdAndUpdate(UUID id, NewArticleDTO body) throws NotFoundException {
-        Article found = this.findById(id);
-        found.setAuthor(body.author());
-        found.setContent(body.content());
-        found.setTitle(body.title());
-        return articlesRepo.save(found);
-    }
+//    @Override
+//    public Article findByIdAndUpdate(UUID id, NewArticleDTO body) throws NotFoundException {
+//        Article found = this.findById(id);
+//        found.setAuthor(body.author());
+//        found.setContent(body.content());
+//        found.setTitle(body.title());
+//        return articlesRepo.save(found);
+//    }
 
     public String uploadImage(MultipartFile file) throws IOException {
         return (String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");

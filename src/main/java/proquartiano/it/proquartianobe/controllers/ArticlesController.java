@@ -14,6 +14,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/articles")
+@CrossOrigin
 public class ArticlesController {
     @Autowired
     private ArticlesService articlesService;
@@ -34,10 +35,10 @@ public class ArticlesController {
         return articlesService.findById(id);
     }
 
-    @PutMapping("/{id}")
-    public Article findByIdAndUpdate(@PathVariable UUID id, @RequestBody NewArticleDTO body) {
-        return articlesService.findByIdAndUpdate(id, body);
-    }
+//    @PutMapping("/{id}")
+//    public Article findByIdAndUpdate(@PathVariable UUID id, @RequestBody NewArticleDTO body) {
+//        return articlesService.findByIdAndUpdate(id, body);
+//    }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

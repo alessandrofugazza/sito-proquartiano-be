@@ -14,7 +14,7 @@ public interface IArticlesDAO {
 
     public void findByIdAndDelete(UUID id);
 
-    public Article findByIdAndUpdate(UUID id, NewArticleDTO article);
+//    public Article findByIdAndUpdate(UUID id, NewArticleDTO article);
 
     public Article findById(UUID id);
 }

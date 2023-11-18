@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.UUID;
 
 public record NewArticleDTO(
-        Admin author,
+        UUID authorId,
         @NotEmpty(message = "Il contenuto non può essere vuoto.") String content,
         @NotEmpty(message = "Il titolo non può essere vuoto.") String title,
-        @NotEmpty(message = "Scegliere almeno una categoria.") List<Category> categories,
-        List<Tag> tags) {
+        @NotEmpty(message = "Scegliere almeno una categoria.") List<UUID> categoryIds,
+        List<UUID> tagIds) {
 
 }
