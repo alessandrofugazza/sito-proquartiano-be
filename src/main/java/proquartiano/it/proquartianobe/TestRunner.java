@@ -3,9 +3,11 @@ package proquartiano.it.proquartianobe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import proquartiano.it.proquartianobe.article.IArticlesDAO;
-import proquartiano.it.proquartianobe.category.ICategoriesDAO;
-import proquartiano.it.proquartianobe.tag.ITagsDAO;
+import proquartiano.it.proquartianobe.dao.IAdminsDAO;
+import proquartiano.it.proquartianobe.dao.IArticlesDAO;
+import proquartiano.it.proquartianobe.dao.ICategoriesDAO;
+import proquartiano.it.proquartianobe.dao.ITagsDAO;
+import proquartiano.it.proquartianobe.entities.Category;
 
 @Component
 public class TestRunner implements CommandLineRunner {
@@ -16,6 +18,9 @@ public class TestRunner implements CommandLineRunner {
     private IArticlesDAO articlesDAO;
     @Autowired
     private ITagsDAO tagsDAO;
+
+//    @Autowired
+//    private IAdminsDAO adminsDAO;
 
     @Override
     public void run(String... args) throws Exception {

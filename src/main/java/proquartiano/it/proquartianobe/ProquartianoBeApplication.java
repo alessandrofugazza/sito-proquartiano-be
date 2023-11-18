@@ -6,10 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ProquartianoBeApplication {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		SpringApplication.run(ProquartianoBeApplication.class, args);
-//		System.out.println("YOYO");
-	}
+        SpringApplication.run(ProquartianoBeApplication.class, args);
+    }
 
 }
