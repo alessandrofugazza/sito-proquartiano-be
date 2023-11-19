@@ -35,14 +35,15 @@ public class ArticlesService implements IArticlesDAO {
     private Cloudinary cloudinary;
 
     @Override
-    public Article save(NewArticleDTO body) {
+    public Article save(NewArticleDTO body) throws IOException {
         Article newArticle = new Article();
         newArticle.setAuthor(adminsRepo.findById(body.authorId()).orElseThrow(() -> new NotFoundException(body.authorId())));
         newArticle.setContent(body.content());
         newArticle.setTitle(body.title());
         newArticle.setCategories(body.categoryIds().stream().map(categoryId -> categoriesRepo.findById(categoryId).orElseThrow(() -> new NotFoundException(categoryId))).toList());
         newArticle.setTags(body.tagIds().stream().map(tagId -> tagsRepo.findById(tagId).orElseThrow(() -> new NotFoundException(tagId))).toList());
-//        newArticle.setTags(body.tagIds());
+        newArticle.setImg(body.img());
+        newArticle.setPdf(body.pdf());
         return articlesRepo.save(newArticle);
     }
 
@@ -50,6 +51,12 @@ public class ArticlesService implements IArticlesDAO {
     public Page<Article> getArticles(int page, int size, String orderBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
         return articlesRepo.findAll(pageable);
+    }
+
+    @Override
+    public Page<Article> findByTitleContainingIgnoreCase(String query, int page, int size, String orderBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
+        return articlesRepo.findByTitleContainingIgnoreCase(query, pageable);
     }
 
     @Override

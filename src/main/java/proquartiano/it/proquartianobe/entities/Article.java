@@ -32,7 +32,7 @@ public class Article {
     @Column(nullable = false)
     @CreationTimestamp
     private LocalDate date;
-    @Column(nullable = false)
+    @Lob
     private String content;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "articles_categories",
@@ -46,6 +46,8 @@ public class Article {
             inverseJoinColumns = @JoinColumn(name = "tags_id"))
     @JsonManagedReference
     private List<Tag> tags;
+    private String img;
+    private String pdf;
 
     public void setTitle(String title) {
         this.title = title;
@@ -69,6 +71,14 @@ public class Article {
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    public void setPdf(String pdf) {
+        this.pdf = pdf;
     }
 
     public static class ArticleBuilder {
