@@ -31,9 +31,9 @@ public class ArticlesController {
     }
 
 
-    @PostMapping("")
+    @PostMapping(value = "", consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.CREATED)
-    public Article saveArticle(@RequestBody @Validated NewArticleDTO body, BindingResult validation) {
+    public Article saveArticle(@RequestPart("article") @Validated NewArticleDTO body, @RequestParam("img") MultipartFile img, BindingResult validation) {
         if (validation.hasErrors()) {
             throw new BadRequestException(validation.getAllErrors());
         } else {
