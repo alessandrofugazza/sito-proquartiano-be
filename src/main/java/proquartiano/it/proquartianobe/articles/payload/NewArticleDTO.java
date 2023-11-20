@@ -12,7 +12,8 @@ public record NewArticleDTO(
         @NotBlank(message = "Il titolo non può essere vuoto.") String title,
         @NotEmpty(message = "Scegliere almeno una categoria.") List<UUID> categoryIds,
         List<UUID> tagIds,
-        String img,
-        String pdf) {
+        String img
+//        String pdf
+) {
 
 }
