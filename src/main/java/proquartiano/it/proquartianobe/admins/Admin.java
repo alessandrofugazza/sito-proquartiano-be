@@ -26,7 +26,9 @@ public class Admin {
     @Column(nullable = false)
     private String email;
     @Column(nullable = false)
-    @OneToMany(mappedBy = "author")
+    private String password;
+    @Column(nullable = false)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "author")
     @JsonBackReference
     private List<Article> articles;
 
@@ -40,6 +42,10 @@ public class Admin {
 
     public void setArticles(List<Article> articles) {
         this.articles = articles;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public static class AdminBuilder {

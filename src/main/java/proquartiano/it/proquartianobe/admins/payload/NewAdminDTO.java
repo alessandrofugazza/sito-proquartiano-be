@@ -10,5 +10,7 @@ public record NewAdminDTO(
         String username,
         @NotBlank(message = "L'email è un campo obbligatorio!")
         @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "L'email inserita non è valida")
-        String email) {
+        String email,
+        @NotBlank(message = "La password è un campo obbligatorio!")
+        String password) {
 }

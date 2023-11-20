@@ -28,6 +28,7 @@ public class AdminsService implements IAdminsDAO {
         Admin newAdmin = new Admin();
         newAdmin.setUsername(body.username());
         newAdmin.setEmail(body.email());
+        newAdmin.setPassword(body.password());
         Admin savedAdmin = adminsRepo.save(newAdmin);
         emailSender.sendRegistrationEmail(body.email());
         return savedAdmin;
@@ -50,5 +51,10 @@ public class AdminsService implements IAdminsDAO {
     @Override
     public Admin findById(UUID id) throws NotFoundException {
         return adminsRepo.findById(id).orElseThrow(() -> new NotFoundException(id));
+    }
+
+    @Override
+    public Admin findByEmail(String email) throws NotFoundException {
+        return adminsRepo.findByEmail(email).orElseThrow(() -> new NotFoundException(email));
     }
 }

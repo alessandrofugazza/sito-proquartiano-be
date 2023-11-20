@@ -13,4 +13,6 @@ public interface IAdminsDAO {
     public Admin findByIdAndUpdate(UUID id, NewAdminDTO admin);
 
     public Admin findById(UUID id);
+
+    public Admin findByEmail(String email);
 }
