@@ -40,7 +40,7 @@ public class ArticlesService implements IArticlesDAO {
         newArticle.setCategories(body.categoryIds().stream().map(categoryId -> categoriesRepo.findById(categoryId).orElseThrow(() -> new NotFoundException(categoryId))).toList());
         newArticle.setTags(body.tagIds().stream().map(tagId -> tagsRepo.findById(tagId).orElseThrow(() -> new NotFoundException(tagId))).toList());
         newArticle.setImg(body.img());
-        newArticle.setPdf(body.pdf());
+//        newArticle.setPdf(body.pdf());
         return articlesRepo.save(newArticle);
     }
 
