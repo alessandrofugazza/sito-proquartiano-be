@@ -25,7 +25,7 @@ public class AdminsController {
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    public Admin saveAdmin(@RequestBody @Validated NewAdminDTO body, BindingResult validation) {
+    public Admin save(@RequestBody @Validated NewAdminDTO body, BindingResult validation) {
         if (validation.hasErrors()) {
             throw new BadRequestException(validation.getAllErrors());
         } else {

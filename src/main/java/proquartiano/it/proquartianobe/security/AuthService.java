@@ -22,10 +22,12 @@ public class AuthService {
     @Autowired
     private JWTTools jwtTools;
 
+    @Autowired
+    private PasswordEncoder bcrypt;
 
     public String authenticateAdmin(AdminLoginDTO body) {
         Admin admin = adminsService.findByEmail(body.email());
-        if (body.password().equals(admin.getPassword())) {
+        if (bcrypt.matches(body.password(), admin.getPassword())) {
             return jwtTools.createToken(admin);
         } else {
             throw new UnauthorizedException("Credenziali non valide.");

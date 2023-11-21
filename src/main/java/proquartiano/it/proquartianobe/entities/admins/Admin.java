@@ -1,6 +1,7 @@
 package proquartiano.it.proquartianobe.entities.admins;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.javafaker.Faker;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,6 +23,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"password"})
 public class Admin implements UserDetails {
     @Id
     @GeneratedValue
