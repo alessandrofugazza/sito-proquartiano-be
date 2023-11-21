@@ -1,5 +1,6 @@
 package proquartiano.it.proquartianobe.entities.articles;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,9 @@ public class ArticlesController {
     @Autowired
     private ArticlesService articlesService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @GetMapping("")
     public Page<Article> getArticles(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "date") String orderBy) {
         return articlesService.getArticles(page, size, orderBy);
@@ -32,15 +36,16 @@ public class ArticlesController {
     }
 
 
-    @PostMapping("")
+    @PostMapping(value = "", consumes = "multipart/form-data")
     @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public Article saveArticle(@RequestBody @Validated NewArticleDTO body, BindingResult validation) {
+    public Article saveArticle(@RequestPart("article") @Validated String articleJson, @RequestParam(value = "img") MultipartFile img, BindingResult validation) {
         if (validation.hasErrors()) {
             throw new BadRequestException(validation.getAllErrors());
         } else {
             try {
-                return articlesService.save(body);
+                NewArticleDTO article = objectMapper.readValue(articleJson, NewArticleDTO.class);
+                return articlesService.save(article, img);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

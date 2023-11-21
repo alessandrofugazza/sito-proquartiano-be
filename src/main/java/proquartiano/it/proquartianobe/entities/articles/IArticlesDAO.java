@@ -2,12 +2,13 @@ package proquartiano.it.proquartianobe.entities.articles;
 
 import org.springframework.data.domain.Page;
 import proquartiano.it.proquartianobe.entities.articles.payload.NewArticleDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.UUID;
 
 public interface IArticlesDAO {
-    public Article save(NewArticleDTO article) throws IOException;
+    public Article save(NewArticleDTO article, MultipartFile img) throws IOException;
 
     public Page<Article> getArticles(int page, int size, String orderBy);
 

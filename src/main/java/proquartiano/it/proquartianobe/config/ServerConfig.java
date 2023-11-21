@@ -19,6 +19,6 @@ public class ServerConfig {
         config.put("cloud_name", name);
         config.put("api_key", apikey);
         config.put("api_secret", secret);
-        return new Cloudinary();
+        return new Cloudinary(config);
     }
 }
