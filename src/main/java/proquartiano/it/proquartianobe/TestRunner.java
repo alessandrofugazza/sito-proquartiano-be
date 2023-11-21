@@ -3,9 +3,9 @@ package proquartiano.it.proquartianobe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import proquartiano.it.proquartianobe.articles.IArticlesDAO;
-import proquartiano.it.proquartianobe.categories.ICategoriesDAO;
-import proquartiano.it.proquartianobe.tags.ITagsDAO;
+import proquartiano.it.proquartianobe.entities.articles.IArticlesDAO;
+import proquartiano.it.proquartianobe.entities.categories.ICategoriesDAO;
+import proquartiano.it.proquartianobe.entities.tags.ITagsDAO;
 
 @Component
 public class TestRunner implements CommandLineRunner {

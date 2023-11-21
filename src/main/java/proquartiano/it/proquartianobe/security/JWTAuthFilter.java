@@ -11,8 +11,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
-import proquartiano.it.proquartianobe.admins.Admin;
-import proquartiano.it.proquartianobe.admins.AdminsService;
+import proquartiano.it.proquartianobe.entities.admins.Admin;
+import proquartiano.it.proquartianobe.entities.admins.AdminsService;
 import proquartiano.it.proquartianobe.exceptions.UnauthorizedException;
 
 import java.io.IOException;
@@ -35,7 +35,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             jwtTools.verifyToken(token);
             String id = jwtTools.extractIdFromToken(token);
             Admin currentAdmin = adminsService.findById(UUID.fromString(id));
-            Authentication authentication = new UsernamePasswordAuthenticationToken(currentAdmin, null);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(currentAdmin, null, currentAdmin.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);
         }
@@ -44,9 +44,11 @@ public class JWTAuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         AntPathMatcher matcher = new AntPathMatcher();
+        // TODO: this.
         return matcher.match("/auth/**", request.getServletPath()) ||
                 matcher.match("/articles/**", request.getServletPath()) ||
                 matcher.match("/categories/**", request.getServletPath()) ||
-                matcher.match("/tags/**", request.getServletPath());
+                matcher.match("/tags/**", request.getServletPath()) ||
+                matcher.match("/admins/**", request.getServletPath());
     }
 }

@@ -1,6 +1,7 @@
 package proquartiano.it.proquartianobe.exceptions;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -21,6 +22,18 @@ public class ExceptionsHandler {
         } else {
             return new ErrorsResponseWithListDTO(e.getMessage(), LocalDateTime.now(), new ArrayList<>());
         }
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorsResponseDTO handleUnauthorized(UnauthorizedException e) {
+        return new ErrorsResponseDTO(e.getMessage(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorsResponseDTO handleAccessDenied(AccessDeniedException e) {
+        return new ErrorsResponseDTO(e.getMessage(), LocalDateTime.now());
     }
 
     @ExceptionHandler(NotFoundException.class)
