@@ -35,7 +35,8 @@ public class Article {
     @Column(nullable = false)
     @CreationTimestamp
     private LocalDate date;
-    @Lob
+    //    @Lob
+    @Column(columnDefinition = "TEXT")
     private String content;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "articles_categories",

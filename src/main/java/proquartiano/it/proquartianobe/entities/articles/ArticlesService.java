@@ -37,8 +37,8 @@ public class ArticlesService implements IArticlesDAO {
         newArticle.setAuthor(adminsRepo.findById(body.authorId()).orElseThrow(() -> new NotFoundException(body.authorId())));
         newArticle.setContent(body.content());
         newArticle.setTitle(body.title());
-        newArticle.setCategories(body.categoryIds().stream().map(categoryId -> categoriesRepo.findById(categoryId).orElseThrow(() -> new NotFoundException(categoryId))).toList());
-        newArticle.setTags(body.tagIds().stream().map(tagId -> tagsRepo.findById(tagId).orElseThrow(() -> new NotFoundException(tagId))).toList());
+        newArticle.setCategories(body.categories().stream().map(categoryName -> categoriesRepo.findByName(categoryName).orElseThrow(() -> new NotFoundException(categoryName))).toList());
+        newArticle.setTags(body.tags().stream().map(tagName -> tagsRepo.findByName(tagName).orElseThrow(() -> new NotFoundException(tagName))).toList());
         newArticle.setImg((String) cloudinary.uploader().upload(img.getBytes(), ObjectUtils.emptyMap()).get("url"));
 //        newArticle.setPdf(body.pdf());
         return articlesRepo.save(newArticle);

@@ -12,9 +12,9 @@ public record NewArticleDTO(
         UUID authorId,
         @NotBlank(message = "Il contenuto non può essere vuoto.") String content,
         @NotBlank(message = "Il titolo non può essere vuoto.") String title,
-        List<UUID> categoryIds,
-//        @NotEmpty(message = "Scegliere almeno una categoria.") List<UUID> categoryIds,
-        List<UUID> tagIds
+        List<String> categories,
+//        @NotEmpty(message = "Scegliere almeno una categoria.") List<String> categoryIds,
+        List<String> tags
 //        MultipartFile img
 //        String pdf
 ) {

@@ -37,9 +37,9 @@ public class ArticlesController {
 
 
     @PostMapping(value = "", consumes = "multipart/form-data")
-    @PreAuthorize("hasAuthority('ADMIN')")
+//    @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public Article saveArticle(@RequestPart("article") @Validated String articleJson, @RequestParam(value = "img") MultipartFile img, BindingResult validation) {
+    public Article saveArticle(@RequestPart("article") @Validated String articleJson, @RequestParam(value = "img", required = false) MultipartFile img, BindingResult validation) {
         if (validation.hasErrors()) {
             throw new BadRequestException(validation.getAllErrors());
         } else {
