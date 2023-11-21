@@ -38,7 +38,7 @@ public class ArticlesController {
             throw new BadRequestException(validation.getAllErrors());
         } else {
             try {
-                return articlesService.save(body);
+                return articlesService.save(body, img);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
