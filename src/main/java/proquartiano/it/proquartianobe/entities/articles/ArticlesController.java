@@ -2,6 +2,7 @@ package proquartiano.it.proquartianobe.entities.articles;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,17 +14,18 @@ import proquartiano.it.proquartianobe.entities.articles.payload.NewArticleDTO;
 import proquartiano.it.proquartianobe.exceptions.BadRequestException;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/articles")
-@CrossOrigin
 public class ArticlesController {
     @Autowired
     private ArticlesService articlesService;
 
     @Autowired
     private ObjectMapper objectMapper;
+
 
     @GetMapping("")
     public Page<Article> getArticles(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "date") String orderBy) {

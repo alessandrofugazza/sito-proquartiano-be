@@ -34,6 +34,8 @@ public class ArticlesService implements IArticlesDAO {
     @Override
     public Article save(NewArticleDTO body, MultipartFile img) throws IOException {
         Article newArticle = new Article();
+
+
         newArticle.setAuthor(adminsRepo.findById(body.authorId()).orElseThrow(() -> new NotFoundException(body.authorId())));
         newArticle.setContent(body.content());
         newArticle.setTitle(body.title());
