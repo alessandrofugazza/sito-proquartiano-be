@@ -49,7 +49,7 @@ public class ArticlesController {
                                           @RequestParam(defaultValue = "0") int page,
                                           @RequestParam(defaultValue = "10") int size,
                                           @RequestParam(defaultValue = "date") String orderBy) {
-        return articlesService.getArticlesByCategory(tagName, page, size, orderBy);
+        return articlesService.getArticlesByTag(tagName, page, size, orderBy);
     }
 
     @GetMapping("/search")

@@ -17,5 +17,5 @@ public interface ArticlesRepository extends JpaRepository<Article, UUID> {
 
     Page<Article> findByCategories_Name(String category, Pageable pageable);
 
-    Page<Article> findByTag_Name(String tag, Pageable pageable);
+    Page<Article> findByTags_Name(String tag, Pageable pageable);
 }

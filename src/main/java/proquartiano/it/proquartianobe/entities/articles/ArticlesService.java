@@ -107,7 +107,7 @@ public class ArticlesService implements IArticlesDAO {
     @Override
     public Page<Article> getArticlesByTag(String tag, int page, int size, String orderBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
-        return articlesRepo.findByCategories_Name(tag, pageable);
+        return articlesRepo.findByTags_Name(tag, pageable);
     }
 
     @Override
