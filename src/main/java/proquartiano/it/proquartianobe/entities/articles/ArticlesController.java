@@ -7,10 +7,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import proquartiano.it.proquartianobe.entities.admins.Admin;
 import proquartiano.it.proquartianobe.entities.articles.payload.NewArticleDTO;
 import proquartiano.it.proquartianobe.exceptions.BadRequestException;
 
@@ -42,14 +45,13 @@ public class ArticlesController {
     @PostMapping(value = "", consumes = "multipart/form-data")
     @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public Article saveArticle(@RequestPart("article") @Validated String articleJson, @RequestParam(value = "img", required = false) MultipartFile img, HttpServletRequest request, BindingResult validation) {
+    public Article saveArticle(@RequestPart("article") @Validated String articleJson, @RequestParam(value = "img", required = false) MultipartFile img, @AuthenticationPrincipal Admin currentAdmin, BindingResult validation) {
         if (validation.hasErrors()) {
             throw new BadRequestException(validation.getAllErrors());
         } else {
             try {
                 NewArticleDTO article = objectMapper.readValue(articleJson, NewArticleDTO.class);
-                String token = request.getHeader("Authorization");
-                return articlesService.save(article, img, token);
+                return articlesService.save(article, img, currentAdmin);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

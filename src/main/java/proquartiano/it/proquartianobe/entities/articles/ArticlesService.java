@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,10 +46,10 @@ public class ArticlesService implements IArticlesDAO {
     }
 
     @Override
-    public Article save(NewArticleDTO body, MultipartFile img, String token) throws IOException {
+    public Article save(NewArticleDTO body, MultipartFile img, Admin currentAdmin) throws IOException {
         Article newArticle = new Article();
 
-        newArticle.setAuthor(getAuthorFromToken(token.substring(7)));
+        newArticle.setAuthor(currentAdmin);
         newArticle.setContent(body.content());
         newArticle.setTitle(body.title());
         newArticle.setCategories(body.categories().stream().map(categoryName -> categoriesRepo.findByName(categoryName).orElseThrow(() -> new NotFoundException(categoryName))).toList());
