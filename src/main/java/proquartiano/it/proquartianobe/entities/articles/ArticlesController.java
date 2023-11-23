@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/articles")
+@RequestMapping("/articoli")
 public class ArticlesController {
     @Autowired
     private ArticlesService articlesService;
@@ -36,7 +36,7 @@ public class ArticlesController {
         return articlesService.getArticles(page, size, orderBy);
     }
 
-    @GetMapping("/category/{categoryName}")
+    @GetMapping("/categoria/{categoryName}")
     public Page<Article> getArticlesByCategory(@PathVariable String categoryName,
                                                @RequestParam(defaultValue = "0") int page,
                                                @RequestParam(defaultValue = "10") int size,
