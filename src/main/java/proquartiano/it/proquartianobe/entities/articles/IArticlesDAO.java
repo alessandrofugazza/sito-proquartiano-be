@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 public interface IArticlesDAO {
-    public Article save(NewArticleDTO article, MultipartFile img) throws IOException;
+    public Article save(NewArticleDTO article, MultipartFile img, String token) throws IOException;
 
     public Page<Article> getArticles(int page, int size, String orderBy);
 

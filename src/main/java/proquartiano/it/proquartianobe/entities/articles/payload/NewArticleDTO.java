@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public record NewArticleDTO(
-        UUID authorId,
+//        UUID authorId,
         @NotBlank(message = "Il contenuto non può essere vuoto.") String content,
         @NotBlank(message = "Il titolo non può essere vuoto.") String title,
         List<String> categories,

@@ -1,6 +1,7 @@
 package proquartiano.it.proquartianobe.entities.articles;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -41,13 +42,14 @@ public class ArticlesController {
     @PostMapping(value = "", consumes = "multipart/form-data")
 //    @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public Article saveArticle(@RequestPart("article") @Validated String articleJson, @RequestParam(value = "img", required = false) MultipartFile img, BindingResult validation) {
+    public Article saveArticle(@RequestPart("article") @Validated String articleJson, @RequestParam(value = "img", required = false) MultipartFile img, HttpServletRequest request, BindingResult validation) {
         if (validation.hasErrors()) {
             throw new BadRequestException(validation.getAllErrors());
         } else {
             try {
                 NewArticleDTO article = objectMapper.readValue(articleJson, NewArticleDTO.class);
-                return articlesService.save(article, img);
+                String token = request.getHeader("Authorization");
+                return articlesService.save(article, img, token);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

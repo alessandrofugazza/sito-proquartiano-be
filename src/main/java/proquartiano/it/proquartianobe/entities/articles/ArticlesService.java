@@ -9,11 +9,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import proquartiano.it.proquartianobe.entities.admins.Admin;
 import proquartiano.it.proquartianobe.entities.articles.payload.NewArticleDTO;
 import proquartiano.it.proquartianobe.exceptions.NotFoundException;
 import proquartiano.it.proquartianobe.entities.admins.AdminsRepository;
 import proquartiano.it.proquartianobe.entities.categories.CategoriesRepository;
 import proquartiano.it.proquartianobe.entities.tags.TagsRepository;
+import proquartiano.it.proquartianobe.security.JWTTools;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -31,12 +33,20 @@ public class ArticlesService implements IArticlesDAO {
     @Autowired
     private Cloudinary cloudinary;
 
+    @Autowired
+    private JWTTools jwtTools;
+
+    public Admin getAuthorFromToken(String token) {
+        UUID adminId = UUID.fromString(jwtTools.extractIdFromToken(token));
+        return adminsRepo.findById(adminId)
+                .orElseThrow(() -> new NotFoundException("Admin not found with ID: " + adminId));
+    }
+
     @Override
-    public Article save(NewArticleDTO body, MultipartFile img) throws IOException {
+    public Article save(NewArticleDTO body, MultipartFile img, String token) throws IOException {
         Article newArticle = new Article();
 
-
-        newArticle.setAuthor(adminsRepo.findById(body.authorId()).orElseThrow(() -> new NotFoundException(body.authorId())));
+        newArticle.setAuthor(getAuthorFromToken(token.substring(7)));
         newArticle.setContent(body.content());
         newArticle.setTitle(body.title());
         newArticle.setCategories(body.categories().stream().map(categoryName -> categoriesRepo.findByName(categoryName).orElseThrow(() -> new NotFoundException(categoryName))).toList());
