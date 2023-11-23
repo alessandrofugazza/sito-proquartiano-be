@@ -19,7 +19,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "admins")
 @Getter
-@ToString
+//@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

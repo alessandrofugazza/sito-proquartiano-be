@@ -54,11 +54,9 @@ public class AdminsController {
     }
 
     @GetMapping("/profilo")
-//    @PreAuthorize("hasAuthority('ADMIN')")
-    public void getProfile(@AuthenticationPrincipal UserDetails currentAdmin) {
-
-        System.out.println(currentAdmin);
-//        return currentAdmin;
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public UserDetails getProfile(@AuthenticationPrincipal UserDetails currentAdmin) {
+        return currentAdmin;
     }
 
     @PutMapping("/profilo")
