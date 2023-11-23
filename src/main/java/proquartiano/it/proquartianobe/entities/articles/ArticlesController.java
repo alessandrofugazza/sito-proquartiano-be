@@ -36,6 +36,22 @@ public class ArticlesController {
         return articlesService.getArticles(page, size, orderBy);
     }
 
+    @GetMapping("/category/{categoryName}")
+    public Page<Article> getArticlesByCategory(@PathVariable String categoryName,
+                                               @RequestParam(defaultValue = "0") int page,
+                                               @RequestParam(defaultValue = "10") int size,
+                                               @RequestParam(defaultValue = "date") String orderBy) {
+        return articlesService.getArticlesByCategory(categoryName, page, size, orderBy);
+    }
+
+    @GetMapping("/tag/{tagName}")
+    public Page<Article> getArticlesByTag(@PathVariable String tagName,
+                                          @RequestParam(defaultValue = "0") int page,
+                                          @RequestParam(defaultValue = "10") int size,
+                                          @RequestParam(defaultValue = "date") String orderBy) {
+        return articlesService.getArticlesByCategory(tagName, page, size, orderBy);
+    }
+
     @GetMapping("/search")
     public Page<Article> findByTitleContainingIgnoreCase(@RequestParam String q, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "date") String orderBy) {
         return articlesService.findByTitleContainingIgnoreCase(q, page, size, orderBy);

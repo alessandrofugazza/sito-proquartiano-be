@@ -15,4 +15,7 @@ public interface ArticlesRepository extends JpaRepository<Article, UUID> {
     @Query("SELECT a FROM Article a WHERE LOWER(a.title) LIKE LOWER(CONCAT('%', :query, '%'))")
     Page<Article> findByTitleContainingIgnoreCase(String query, Pageable pageable);
 
+    Page<Article> findByCategories_Name(String category, Pageable pageable);
+
+    Page<Article> findByTag_Name(String tag, Pageable pageable);
 }

@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +20,6 @@ import proquartiano.it.proquartianobe.security.JWTTools;
 
 import java.io.IOException;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class ArticlesService implements IArticlesDAO {
@@ -98,6 +96,18 @@ public class ArticlesService implements IArticlesDAO {
     public Page<Article> getArticles(int page, int size, String orderBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
         return articlesRepo.findAll(pageable);
+    }
+
+    @Override
+    public Page<Article> getArticlesByCategory(String category, int page, int size, String orderBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
+        return articlesRepo.findByCategories_Name(category, pageable);
+    }
+
+    @Override
+    public Page<Article> getArticlesByTag(String tag, int page, int size, String orderBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
+        return articlesRepo.findByCategories_Name(tag, pageable);
     }
 
     @Override
