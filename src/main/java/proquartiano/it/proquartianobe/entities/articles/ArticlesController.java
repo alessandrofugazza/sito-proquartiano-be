@@ -56,15 +56,25 @@ public class ArticlesController {
         }
     }
 
+    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
+    public Article findByIdAndUpdate(@PathVariable UUID id, @RequestPart("article") @Validated String articleJson, @RequestParam(value = "img", required = false) MultipartFile img, BindingResult validation) {
+        if (validation.hasErrors()) {
+            throw new BadRequestException(validation.getAllErrors());
+        } else {
+            try {
+                NewArticleDTO article = objectMapper.readValue(articleJson, NewArticleDTO.class);
+                return articlesService.findByIdAndUpdate(id, article, img);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     @GetMapping("/{id}")
     public Article findById(@PathVariable UUID id) {
         return articlesService.findById(id);
     }
 
-//    @PutMapping("/{id}")
-//    public Article findByIdAndUpdate(@PathVariable UUID id, @RequestBody NewArticleDTO body) {
-//        return articlesService.findByIdAndUpdate(id, body);
-//    }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -72,10 +82,10 @@ public class ArticlesController {
         articlesService.findByIdAndDelete(id);
     }
 
-    @PostMapping("/upload")
-    public String uploadImage(@RequestParam("image") MultipartFile body) throws IOException {
-        return articlesService.uploadImage(body);
-    }
+//    @PostMapping("/upload")
+//    public String uploadImage(@RequestParam("image") MultipartFile body) throws IOException {
+//        return articlesService.uploadImage(body);
+//    }
 
 
 }

@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import proquartiano.it.proquartianobe.entities.admins.Admin;
 import proquartiano.it.proquartianobe.entities.articles.payload.NewArticleDTO;
@@ -19,6 +20,7 @@ import proquartiano.it.proquartianobe.security.JWTTools;
 
 import java.io.IOException;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ArticlesService implements IArticlesDAO {
@@ -56,6 +58,37 @@ public class ArticlesService implements IArticlesDAO {
         return articlesRepo.save(newArticle);
     }
 
+    @Override
+    @Transactional
+    public Article findByIdAndUpdate(UUID id, NewArticleDTO body, MultipartFile img) throws NotFoundException, IOException {
+        // TODO: only change actually modified fields
+        Article found = this.findById(id);
+        found.setContent(body.content());
+        found.setTitle(body.title());
+        found.getCategories().clear();
+        found.getCategories().addAll(
+                body.categories().stream()
+                        .map(categoryName -> categoriesRepo.findByName(categoryName)
+                                .orElseThrow(() -> new NotFoundException(categoryName)))
+                        .toList()
+        );
+
+        found.getTags().clear();
+        found.getTags().addAll(
+                body.tags().stream()
+                        .map(tagName -> tagsRepo.findByName(tagName)
+                                .orElseThrow(() -> new NotFoundException(tagName)))
+                        .toList()
+        );
+        String imgUrl = found.getImg();
+        String[] parts = imgUrl.split("/");
+        String imgId = parts[parts.length - 1].split("\\.")[0];
+        cloudinary.uploader().destroy(imgId, ObjectUtils.emptyMap());
+
+        found.setImg((String) cloudinary.uploader().upload(img.getBytes(), ObjectUtils.emptyMap()).get("url"));
+        return articlesRepo.save(found);
+    }
+
     public String uploadImage(MultipartFile file) throws IOException {
         return (String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
     }
@@ -82,15 +115,6 @@ public class ArticlesService implements IArticlesDAO {
         Article found = this.findById(id);
         articlesRepo.delete(found);
     }
-
-//    @Override
-//    public Article findByIdAndUpdate(UUID id, NewArticleDTO body) throws NotFoundException {
-//        Article found = this.findById(id);
-//        found.setAuthor(body.author());
-//        found.setContent(body.content());
-//        found.setTitle(body.title());
-//        return articlesRepo.save(found);
-//    }
 
 
 //    @Override
