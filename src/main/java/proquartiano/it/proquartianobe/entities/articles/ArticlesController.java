@@ -32,24 +32,24 @@ public class ArticlesController {
 
 
     @GetMapping("")
-    public Page<Article> getArticles(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "date") String orderBy) {
-        return articlesService.getArticles(page, size, orderBy);
-    }
-
-    @GetMapping("/categoria/{categoryName}")
-    public Page<Article> getArticlesByCategory(@PathVariable String categoryName,
-                                               @RequestParam(defaultValue = "0") int page,
-                                               @RequestParam(defaultValue = "10") int size,
-                                               @RequestParam(defaultValue = "date") String orderBy) {
-        return articlesService.getArticlesByCategory(categoryName, page, size, orderBy);
-    }
-
-    @GetMapping("/tag/{tagName}")
-    public Page<Article> getArticlesByTag(@PathVariable String tagName,
-                                          @RequestParam(defaultValue = "0") int page,
-                                          @RequestParam(defaultValue = "10") int size,
-                                          @RequestParam(defaultValue = "date") String orderBy) {
-        return articlesService.getArticlesByTag(tagName, page, size, orderBy);
+    public Page<Article> getArticles(@RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = "10") int size,
+                                     @RequestParam(defaultValue = "date") String orderBy,
+                                     @RequestParam(required = false) String categoria,
+                                     @RequestParam(required = false) String tag,
+                                     @RequestParam(required = false) String autore
+    ) {
+        // todo better syntax
+        // todo multiple search params if needed
+        if (categoria != null) {
+            return articlesService.getArticlesByCategory(categoria, page, size, orderBy);
+        } else if (tag != null) {
+            return articlesService.getArticlesByTag(tag, page, size, orderBy);
+        } else if (autore != null) {
+            return articlesService.getArticlesByAuthor(autore, page, size, orderBy);
+        } else {
+            return articlesService.getArticles(page, size, orderBy);
+        }
     }
 
     @GetMapping("/search")

@@ -115,6 +115,12 @@ public class ArticlesService implements IArticlesDAO {
     }
 
     @Override
+    public Page<Article> getArticlesByAuthor(String author, int page, int size, String orderBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
+        return articlesRepo.findByAuthor_Username(author, pageable);
+    }
+
+    @Override
     public Page<Article> findByTitleContainingIgnoreCase(String query, int page, int size, String orderBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
         return articlesRepo.findByTitleContainingIgnoreCase(query, pageable);

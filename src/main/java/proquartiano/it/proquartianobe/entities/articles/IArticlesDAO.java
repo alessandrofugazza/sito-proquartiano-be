@@ -20,6 +20,8 @@ public interface IArticlesDAO {
 
     Page<Article> getArticlesByTag(String tag, int page, int size, String orderBy);
 
+    Page<Article> getArticlesByAuthor(String author, int page, int size, String orderBy);
+
     //// public List<Article> findByCategory(String categoryName);
     public Page<Article> findByTitleContainingIgnoreCase(String query, int page, int size, String orderBy);
 
