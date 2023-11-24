@@ -27,11 +27,11 @@ public class AdminsService implements IAdminsDAO {
         adminsRepo.findByEmail(body.email()).ifPresent(admin -> {
             throw new BadRequestException("L'email " + admin.getEmail() + " è già utilizzata.");
         });
-        adminsRepo.findByUsername(body.username()).ifPresent(admin -> {
-            throw new BadRequestException("L'username " + admin.getUsername() + " è già utilizzato.");
+        adminsRepo.findBySignature(body.signature()).ifPresent(admin -> {
+            throw new BadRequestException("L'username " + admin.getSignature() + " è già utilizzato.");
         });
         Admin newAdmin = new Admin();
-        newAdmin.setUsername(body.username());
+        newAdmin.setSignature(body.signature());
         newAdmin.setEmail(body.email());
         newAdmin.setPassword(bcrypt.encode(body.password()));
         newAdmin.setRole(Role.ADMIN);
@@ -49,7 +49,7 @@ public class AdminsService implements IAdminsDAO {
     @Override
     public Admin findByIdAndUpdate(UUID id, NewAdminDTO body) throws NotFoundException {
         Admin found = this.findById(id);
-        found.setUsername(body.username());
+        found.setSignature(body.signature());
         found.setEmail(body.email());
         return adminsRepo.save(found);
     }

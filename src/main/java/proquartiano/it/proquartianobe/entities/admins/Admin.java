@@ -29,7 +29,7 @@ public class Admin implements UserDetails {
     @GeneratedValue
     private UUID id;
     @Column(nullable = false)
-    private String username;
+    private String signature;
     @Column(nullable = false)
     private String email;
     @Column(nullable = false)
@@ -45,8 +45,8 @@ public class Admin implements UserDetails {
         this.role = role;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 
     public void setEmail(String email) {

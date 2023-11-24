@@ -19,6 +19,6 @@ public interface ArticlesRepository extends JpaRepository<Article, UUID> {
 
     Page<Article> findByTags_Name(String tag, Pageable pageable);
 
-    @Query("SELECT a FROM Article a WHERE a.author.username = :username")
-    Page<Article> findByAuthor_Username(String username, Pageable pageable);
+    @Query("SELECT a FROM Article a WHERE a.author.signature = :signature")
+    Page<Article> findByAuthor_Username(String signature, Pageable pageable);
 }
