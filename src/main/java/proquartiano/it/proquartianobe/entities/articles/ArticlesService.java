@@ -54,7 +54,9 @@ public class ArticlesService implements IArticlesDAO {
         newArticle.setTitle(body.title());
         newArticle.setCategories(body.categories().stream().map(categoryName -> categoriesRepo.findByName(categoryName).orElseThrow(() -> new NotFoundException(categoryName))).toList());
         newArticle.setTags(body.tags().stream().map(tagName -> tagsRepo.findByName(tagName).orElseThrow(() -> new NotFoundException(tagName))).toList());
-        newArticle.setImg((String) cloudinary.uploader().upload(img.getBytes(), ObjectUtils.emptyMap()).get("url"));
+        if (img != null) {
+            newArticle.setImg((String) cloudinary.uploader().upload(img.getBytes(), ObjectUtils.emptyMap()).get("url"));
+        }
 //        newArticle.setPdf(body.pdf());
         return articlesRepo.save(newArticle);
     }
@@ -90,9 +92,9 @@ public class ArticlesService implements IArticlesDAO {
         return articlesRepo.save(found);
     }
 
-    public String uploadImage(MultipartFile file) throws IOException {
-        return (String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
-    }
+//    public String uploadImage(MultipartFile file) throws IOException {
+//        return (String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
+//    }
 
     @Override
     public Page<Article> getArticles(int page, int size, String orderBy) {
