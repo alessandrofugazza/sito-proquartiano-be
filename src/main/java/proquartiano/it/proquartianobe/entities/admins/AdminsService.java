@@ -49,8 +49,15 @@ public class AdminsService implements IAdminsDAO {
     @Override
     public Admin findByIdAndUpdate(UUID id, NewAdminDTO body) throws NotFoundException {
         Admin found = this.findById(id);
+        adminsRepo.findByEmail(body.email()).ifPresent(admin -> {
+            throw new BadRequestException("L'email " + admin.getEmail() + " è già utilizzata.");
+        });
+        adminsRepo.findBySignature(body.signature()).ifPresent(admin -> {
+            throw new BadRequestException("L'username " + admin.getSignature() + " è già utilizzato.");
+        });
         found.setSignature(body.signature());
         found.setEmail(body.email());
+        found.setPassword(bcrypt.encode(body.password()));
         return adminsRepo.save(found);
     }
 

@@ -37,6 +37,16 @@ public class AdminsController {
         }
     }
 
+    @PutMapping("/profilo")
+    public UserDetails editProfile(@AuthenticationPrincipal Admin currentAdmin, @RequestBody @Validated NewAdminDTO body, BindingResult validation) {
+        if (validation.hasErrors()) {
+            throw new BadRequestException(validation.getAllErrors());
+        } else {
+            return adminsService.findByIdAndUpdate(currentAdmin.getId(), body);
+        }
+
+    }
+
     @GetMapping("/{id}")
     public Admin findById(@PathVariable UUID id) {
         return adminsService.findById(id);
@@ -59,10 +69,6 @@ public class AdminsController {
         return currentAdmin;
     }
 
-    @PutMapping("/profilo")
-    public UserDetails editProfile(@AuthenticationPrincipal Admin currentAdmin, @RequestBody NewAdminDTO body) {
-        return adminsService.findByIdAndUpdate(currentAdmin.getId(), body);
-    }
 
     @DeleteMapping("/profilo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
