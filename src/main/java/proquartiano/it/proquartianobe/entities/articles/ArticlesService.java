@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import proquartiano.it.proquartianobe.entities.admins.Admin;
 import proquartiano.it.proquartianobe.entities.articles.payload.NewArticleDTO;
+import proquartiano.it.proquartianobe.entities.tags.Tag;
 import proquartiano.it.proquartianobe.exceptions.NotFoundException;
 import proquartiano.it.proquartianobe.entities.admins.AdminsRepository;
 import proquartiano.it.proquartianobe.entities.categories.CategoriesRepository;
@@ -20,6 +21,9 @@ import proquartiano.it.proquartianobe.entities.tags.TagsRepository;
 import proquartiano.it.proquartianobe.security.JWTTools;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -45,7 +49,6 @@ public class ArticlesService implements IArticlesDAO {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('ADMIN')")
     public Article save(NewArticleDTO body, MultipartFile img, Admin currentAdmin) throws IOException {
         Article newArticle = new Article();
 
@@ -53,7 +56,20 @@ public class ArticlesService implements IArticlesDAO {
         newArticle.setContent(body.content());
         newArticle.setTitle(body.title());
         newArticle.setCategories(body.categories().stream().map(categoryName -> categoriesRepo.findByName(categoryName).orElseThrow(() -> new NotFoundException(categoryName))).toList());
-        newArticle.setTags(body.tags().stream().map(tagName -> tagsRepo.findByName(tagName).orElseThrow(() -> new NotFoundException(tagName))).toList());
+        List<Tag> tagsToAdd = new ArrayList<>();
+        body.tags().forEach(tagName -> {
+            Optional<Tag> foundTag = tagsRepo.findByName(tagName);
+            if (foundTag.isPresent()) {
+                tagsToAdd.add(foundTag.get());
+            } else {
+                Tag newTag = new Tag();
+                newTag.setName(tagName);
+                Tag savedTag = tagsRepo.save(newTag);
+                tagsToAdd.add(savedTag);
+
+            }
+        });
+        newArticle.setTags(tagsToAdd);
         if (img != null) {
             newArticle.setImg((String) cloudinary.uploader().upload(img.getBytes(), ObjectUtils.emptyMap()).get("url"));
         }
