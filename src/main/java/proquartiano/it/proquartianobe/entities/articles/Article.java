@@ -10,6 +10,7 @@ import proquartiano.it.proquartianobe.entities.categories.Category;
 import proquartiano.it.proquartianobe.entities.tags.Tag;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -34,8 +35,7 @@ public class Article {
     private Admin author;
     @Column(nullable = false)
     @CreationTimestamp
-    private LocalDate date;
-    //    @Lob
+    private LocalDateTime date;
     @Column(columnDefinition = "TEXT")
     private String content;
     @ManyToMany(fetch = FetchType.EAGER)
@@ -61,7 +61,7 @@ public class Article {
         this.author = author;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
@@ -89,7 +89,7 @@ public class Article {
         private Faker fkr = new Faker();
         private String title = fkr.esports().event();
         private Admin author = Admin.builder().build();
-        private LocalDate date = fkr.date().past(365, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        //        private LocalDateTime date = fkr.date().past(365, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         private String content = fkr.book().title();
         private List<Category> categories = new ArrayList<>();
         private List<Tag> tags = new ArrayList<>();
