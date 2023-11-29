@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.util.UUID;
 
 public interface IArticlesDAO {
-    public Article save(NewArticleDTO article, MultipartFile img, Admin currentAdmin) throws IOException;
+    public Article save(NewArticleDTO article, MultipartFile img, MultipartFile pdf, Admin currentAdmin) throws IOException;
 
-    Article findByIdAndUpdate(UUID id, NewArticleDTO body, MultipartFile img) throws NotFoundException, IOException;
+    Article findByIdAndUpdate(UUID id, NewArticleDTO body, MultipartFile img, MultipartFile pdf) throws NotFoundException, IOException;
 
     public Page<Article> getArticles(int page, int size, String orderBy);
 

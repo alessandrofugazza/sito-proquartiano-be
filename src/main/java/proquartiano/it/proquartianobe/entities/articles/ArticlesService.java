@@ -49,7 +49,7 @@ public class ArticlesService implements IArticlesDAO {
     }
 
     @Override
-    public Article save(NewArticleDTO body, MultipartFile img, Admin currentAdmin) throws IOException {
+    public Article save(NewArticleDTO body, MultipartFile img, MultipartFile pdf, Admin currentAdmin) throws IOException {
         Article newArticle = new Article();
 
         newArticle.setAuthor(currentAdmin);
@@ -73,13 +73,17 @@ public class ArticlesService implements IArticlesDAO {
         if (img != null) {
             newArticle.setImg((String) cloudinary.uploader().upload(img.getBytes(), ObjectUtils.emptyMap()).get("url"));
         }
-//        newArticle.setPdf(body.pdf());
+        System.out.println(pdf);
+        if (pdf != null) {
+            newArticle.setPdf((String) cloudinary.uploader().upload(pdf.getBytes(), ObjectUtils.asMap("resource_type", "raw")).get("url"));
+//            newArticle.setPdf(cloudinary.uploader().upload(pdf.getInputStream(), ObjectUtils.asMap("resource_type", "raw")).get("url").toString());
+        }
         return articlesRepo.save(newArticle);
     }
 
     @Override
     @Transactional
-    public Article findByIdAndUpdate(UUID id, NewArticleDTO body, MultipartFile img) throws NotFoundException, IOException {
+    public Article findByIdAndUpdate(UUID id, NewArticleDTO body, MultipartFile img, MultipartFile pdf) throws NotFoundException, IOException {
         // TODO: only change actually modified fields
         Article found = this.findById(id);
         found.setContent(body.content());
