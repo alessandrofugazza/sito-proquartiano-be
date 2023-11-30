@@ -160,6 +160,12 @@ public class ArticlesService implements IArticlesDAO {
         }
     }
 
+    @Override
+    public Page<Article> getComingUpArticles(String sectionName, int page, int size, String orderBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, orderBy));
+        return articlesRepo.findWithEventDate(pageable);
+    }
+
 //    @Override
 //    public Page<Article> getArticlesBySection(Section section, int page, int size, String orderBy) {
 //        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));

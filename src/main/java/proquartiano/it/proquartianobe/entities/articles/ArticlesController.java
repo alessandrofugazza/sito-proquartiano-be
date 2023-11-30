@@ -77,14 +77,14 @@ public class ArticlesController {
         return articlesService.findByTitleContainingIgnoreCase(q, page, size, orderBy);
     }
 
-//    @GetMapping("/coming-up")
-//    public Page<Article> getComingUpArticles(@RequestParam(defaultValue = "0") int page,
-//                                             @RequestParam(defaultValue = "5") int size,
-//                                             @RequestParam(defaultValue = "eventDate") String orderBy,
-//                                             @RequestParam(required = false) String section
-//    ) {
-//
-//    }
+    @GetMapping("/coming-up")
+    public Page<Article> getComingUpArticles(@RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(defaultValue = "5") int size,
+                                             @RequestParam(defaultValue = "eventDate") String orderBy,
+                                             @RequestParam(required = false) String sectionName
+    ) {
+        return articlesService.getComingUpArticles(sectionName, page, size, orderBy);
+    }
 
     @PostMapping(value = "", consumes = "multipart/form-data")
     @PreAuthorize("hasAuthority('ADMIN')")

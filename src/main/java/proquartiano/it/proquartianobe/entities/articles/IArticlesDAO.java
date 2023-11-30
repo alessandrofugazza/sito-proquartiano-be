@@ -22,6 +22,8 @@ public interface IArticlesDAO {
 
     Page<Article> getArticles(String category, String tag, String author, String sectionName, int page, int size, String orderBy);
 
+    Page<Article> getComingUpArticles(String sectionName, int page, int size, String orderBy);
+
     //// public List<Article> findByCategory(String categoryName);
     public Page<Article> findByTitleContainingIgnoreCase(String query, int page, int size, String orderBy);
 

@@ -28,5 +28,8 @@ public interface ArticlesRepository extends JpaRepository<Article, UUID> {
     @Query("SELECT a FROM Article a WHERE a.section.name = :sectionName")
     Page<Article> findBySection(ESection sectionName, Pageable pageable);
 
+    @Query("SELECT a FROM Article a WHERE a.eventDate IS NOT NULL AND a.eventDate >= CURRENT_DATE")
+    Page<Article> findWithEventDate(Pageable pageable);
+
 
 }
