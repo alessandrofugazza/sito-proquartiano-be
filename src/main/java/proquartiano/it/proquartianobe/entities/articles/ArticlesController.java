@@ -31,9 +31,6 @@ public class ArticlesController {
     private ArticlesService articlesService;
 
     @Autowired
-    private SectionsRepository sectionsRepo;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
 
@@ -49,28 +46,6 @@ public class ArticlesController {
         // todo multiple search params if needed
         return articlesService.getArticles(categoria, tag, autore, section, page, size, orderBy);
     }
-
-    // todo review this doesnt seem right
-//    @GetMapping("/manifestazioni/mercatino-dei-libri")
-//    public Page<Article> getMercatinoArticles(@RequestParam(defaultValue = "0") int page,
-//                                              @RequestParam(defaultValue = "10") int size,
-//                                              @RequestParam(defaultValue = "date") String orderBy) {
-//        return articlesService.getArticlesBySection(sectionsRepo.findByName(ESection.MERCATINO_LIBRI).orElseThrow(() -> new NotFoundException(ESection.MERCATINO_LIBRI.name())), page, size, orderBy);
-//    }
-//
-//    @GetMapping("/manifestazioni/sagra")
-//    public Page<Article> getSagraArticles(@RequestParam(defaultValue = "0") int page,
-//                                          @RequestParam(defaultValue = "10") int size,
-//                                          @RequestParam(defaultValue = "date") String orderBy) {
-//        return articlesService.getArticlesBySection(sectionsRepo.findByName(ESection.SAGRA).orElseThrow(() -> new NotFoundException(ESection.SAGRA.name())), page, size, orderBy);
-//    }
-//
-//    @GetMapping("/manifestazioni/concorso-cori")
-//    public Page<Article> getConcorsoArticles(@RequestParam(defaultValue = "0") int page,
-//                                             @RequestParam(defaultValue = "10") int size,
-//                                             @RequestParam(defaultValue = "date") String orderBy) {
-//        return articlesService.getArticlesBySection(sectionsRepo.findByName(ESection.CONCORSO_CORI).orElseThrow(() -> new NotFoundException(ESection.CONCORSO_CORI.name())), page, size, orderBy);
-//    }
 
     @GetMapping("/search")
     public Page<Article> findByTitleContainingIgnoreCase(@RequestParam String q, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "date") String orderBy) {
