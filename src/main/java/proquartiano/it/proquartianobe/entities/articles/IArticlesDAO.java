@@ -16,16 +16,11 @@ public interface IArticlesDAO {
 
     Article findByIdAndUpdate(UUID id, NewArticleDTO body, MultipartFile img, MultipartFile pdf) throws NotFoundException, IOException;
 
-    public Page<Article> getArticles(int page, int size, String orderBy);
+//    Page<Article> getArticles(String category, String tag, String author, int page, int size, String orderBy);
 
-    Page<Article> getArticlesByCategory(String category, int page, int size, String orderBy);
+//    Page<Article> getArticlesBySection(Section section, int page, int size, String orderBy);
 
-    Page<Article> getArticlesByTag(String tag, int page, int size, String orderBy);
-
-    Page<Article> getArticlesByAuthor(String author, int page, int size, String orderBy);
-
-
-    Page<Article> getArticlesBySection(Section section, int page, int size, String orderBy);
+    Page<Article> getArticles(String category, String tag, String author, String sectionName, int page, int size, String orderBy);
 
     //// public List<Article> findByCategory(String categoryName);
     public Page<Article> findByTitleContainingIgnoreCase(String query, int page, int size, String orderBy);

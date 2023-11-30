@@ -43,47 +43,48 @@ public class ArticlesController {
                                      @RequestParam(defaultValue = "date") String orderBy,
                                      @RequestParam(required = false) String categoria,
                                      @RequestParam(required = false) String tag,
-                                     @RequestParam(required = false) String autore
+                                     @RequestParam(required = false) String autore,
+                                     @RequestParam(required = false) String section
     ) {
-        // todo better syntax
         // todo multiple search params if needed
-        if (categoria != null) {
-            return articlesService.getArticlesByCategory(categoria, page, size, orderBy);
-        } else if (tag != null) {
-            return articlesService.getArticlesByTag(tag, page, size, orderBy);
-        } else if (autore != null) {
-            return articlesService.getArticlesByAuthor(autore, page, size, orderBy);
-        } else {
-            return articlesService.getArticles(page, size, orderBy);
-        }
+        return articlesService.getArticles(categoria, tag, autore, section, page, size, orderBy);
     }
 
-    @GetMapping("/manifestazioni/mercatino-dei-libri")
-    public Page<Article> getMercatinoArticles(@RequestParam(defaultValue = "0") int page,
-                                              @RequestParam(defaultValue = "10") int size,
-                                              @RequestParam(defaultValue = "date") String orderBy) {
-        return articlesService.getArticlesBySection(sectionsRepo.findByName(ESection.MERCATINO_LIBRI).orElseThrow(() -> new NotFoundException(ESection.MERCATINO_LIBRI.name())), page, size, orderBy);
-    }
-
-    @GetMapping("/manifestazioni/sagra")
-    public Page<Article> getSagraArticles(@RequestParam(defaultValue = "0") int page,
-                                          @RequestParam(defaultValue = "10") int size,
-                                          @RequestParam(defaultValue = "date") String orderBy) {
-        return articlesService.getArticlesBySection(sectionsRepo.findByName(ESection.SAGRA).orElseThrow(() -> new NotFoundException(ESection.SAGRA.name())), page, size, orderBy);
-    }
-
-    @GetMapping("/manifestazioni/concorso-cori")
-    public Page<Article> getConcorsoArticles(@RequestParam(defaultValue = "0") int page,
-                                             @RequestParam(defaultValue = "10") int size,
-                                             @RequestParam(defaultValue = "date") String orderBy) {
-        return articlesService.getArticlesBySection(sectionsRepo.findByName(ESection.CONCORSO_CORI).orElseThrow(() -> new NotFoundException(ESection.CONCORSO_CORI.name())), page, size, orderBy);
-    }
+    // todo review this doesnt seem right
+//    @GetMapping("/manifestazioni/mercatino-dei-libri")
+//    public Page<Article> getMercatinoArticles(@RequestParam(defaultValue = "0") int page,
+//                                              @RequestParam(defaultValue = "10") int size,
+//                                              @RequestParam(defaultValue = "date") String orderBy) {
+//        return articlesService.getArticlesBySection(sectionsRepo.findByName(ESection.MERCATINO_LIBRI).orElseThrow(() -> new NotFoundException(ESection.MERCATINO_LIBRI.name())), page, size, orderBy);
+//    }
+//
+//    @GetMapping("/manifestazioni/sagra")
+//    public Page<Article> getSagraArticles(@RequestParam(defaultValue = "0") int page,
+//                                          @RequestParam(defaultValue = "10") int size,
+//                                          @RequestParam(defaultValue = "date") String orderBy) {
+//        return articlesService.getArticlesBySection(sectionsRepo.findByName(ESection.SAGRA).orElseThrow(() -> new NotFoundException(ESection.SAGRA.name())), page, size, orderBy);
+//    }
+//
+//    @GetMapping("/manifestazioni/concorso-cori")
+//    public Page<Article> getConcorsoArticles(@RequestParam(defaultValue = "0") int page,
+//                                             @RequestParam(defaultValue = "10") int size,
+//                                             @RequestParam(defaultValue = "date") String orderBy) {
+//        return articlesService.getArticlesBySection(sectionsRepo.findByName(ESection.CONCORSO_CORI).orElseThrow(() -> new NotFoundException(ESection.CONCORSO_CORI.name())), page, size, orderBy);
+//    }
 
     @GetMapping("/search")
     public Page<Article> findByTitleContainingIgnoreCase(@RequestParam String q, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "date") String orderBy) {
         return articlesService.findByTitleContainingIgnoreCase(q, page, size, orderBy);
     }
 
+//    @GetMapping("/coming-up")
+//    public Page<Article> getComingUpArticles(@RequestParam(defaultValue = "0") int page,
+//                                             @RequestParam(defaultValue = "5") int size,
+//                                             @RequestParam(defaultValue = "eventDate") String orderBy,
+//                                             @RequestParam(required = false) String section
+//    ) {
+//
+//    }
 
     @PostMapping(value = "", consumes = "multipart/form-data")
     @PreAuthorize("hasAuthority('ADMIN')")

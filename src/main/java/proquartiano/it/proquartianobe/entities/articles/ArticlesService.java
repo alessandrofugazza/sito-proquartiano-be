@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import proquartiano.it.proquartianobe.entities.admins.Admin;
 import proquartiano.it.proquartianobe.entities.articles.payload.NewArticleDTO;
-import proquartiano.it.proquartianobe.entities.sections.Section;
 import proquartiano.it.proquartianobe.entities.sections.SectionsRepository;
 import proquartiano.it.proquartianobe.entities.tags.Tag;
 import proquartiano.it.proquartianobe.enums.ESection;
@@ -140,34 +139,32 @@ public class ArticlesService implements IArticlesDAO {
 //    }
 
     @Override
-    public Page<Article> getArticles(int page, int size, String orderBy) {
+    public Page<Article> getArticles(String category, String tag, String author, String sectionName, int page, int size, String orderBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
-        return articlesRepo.findAll(pageable);
+        if (category != null) {
+            return articlesRepo.findByCategories_Name(category, pageable);
+        } else if (tag != null) {
+            return articlesRepo.findByTags_Name(tag, pageable);
+        } else if (author != null) {
+            return articlesRepo.findByAuthor_Username(author, pageable);
+        } else if (sectionName != null) {
+            ESection section = switch (sectionName) {
+                case "mercatino" -> ESection.MERCATINO_LIBRI;
+                case "sagra" -> ESection.SAGRA;
+                case "concorso" -> ESection.CONCORSO_CORI;
+                default -> null;
+            };
+            return articlesRepo.findBySection(section, pageable);
+        } else {
+            return articlesRepo.findAll(pageable);
+        }
     }
 
-    @Override
-    public Page<Article> getArticlesByCategory(String category, int page, int size, String orderBy) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
-        return articlesRepo.findByCategories_Name(category, pageable);
-    }
-
-    @Override
-    public Page<Article> getArticlesByTag(String tag, int page, int size, String orderBy) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
-        return articlesRepo.findByTags_Name(tag, pageable);
-    }
-
-    @Override
-    public Page<Article> getArticlesByAuthor(String author, int page, int size, String orderBy) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
-        return articlesRepo.findByAuthor_Username(author, pageable);
-    }
-
-    @Override
-    public Page<Article> getArticlesBySection(Section section, int page, int size, String orderBy) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
-        return articlesRepo.findBySection(section, pageable);
-    }
+//    @Override
+//    public Page<Article> getArticlesBySection(Section section, int page, int size, String orderBy) {
+//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
+//        return articlesRepo.findBySection(section, pageable);
+//    }
 
     @Override
     public Page<Article> findByTitleContainingIgnoreCase(String query, int page, int size, String orderBy) {
