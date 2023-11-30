@@ -13,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import proquartiano.it.proquartianobe.entities.admins.Admin;
 import proquartiano.it.proquartianobe.entities.articles.payload.NewArticleDTO;
+import proquartiano.it.proquartianobe.entities.sections.SectionsRepository;
 import proquartiano.it.proquartianobe.entities.tags.Tag;
+import proquartiano.it.proquartianobe.enums.ESection;
 import proquartiano.it.proquartianobe.exceptions.NotFoundException;
 import proquartiano.it.proquartianobe.entities.admins.AdminsRepository;
 import proquartiano.it.proquartianobe.entities.categories.CategoriesRepository;
@@ -21,10 +23,10 @@ import proquartiano.it.proquartianobe.entities.tags.TagsRepository;
 import proquartiano.it.proquartianobe.security.JWTTools;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.io.NotActiveException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 public class ArticlesService implements IArticlesDAO {
@@ -36,6 +38,8 @@ public class ArticlesService implements IArticlesDAO {
     private CategoriesRepository categoriesRepo;
     @Autowired
     private TagsRepository tagsRepo;
+    @Autowired
+    private SectionsRepository sectionsRepo;
     @Autowired
     private Cloudinary cloudinary;
 
@@ -55,6 +59,29 @@ public class ArticlesService implements IArticlesDAO {
         newArticle.setAuthor(currentAdmin);
         newArticle.setContent(body.content());
         newArticle.setTitle(body.title());
+        // todo not proud of this either
+        System.out.println(body.eventDate());
+        if (body.eventDate() != null && !body.eventDate().isEmpty()) {
+            newArticle.setEventDate(LocalDate.parse(body.eventDate()));
+        } else {
+            newArticle.setEventDate(null);
+        }
+        if (body.section() != null) {
+            String sectionString = body.section();
+            // todo this is really, really bad. find a better way to handle this.
+            ESection section = switch (sectionString) {
+                case "Mercatino dei libri" -> ESection.MERCATINO_LIBRI;
+                case "Sagra di Quartiano" -> ESection.SAGRA;
+                case "Concorso corale" -> ESection.CONCORSO_CORI;
+                default -> null;
+            };
+            // todo also really bad
+            if (section != null) {
+                newArticle.setSection(sectionsRepo.findByName(section).orElseThrow(() -> new NotFoundException(section.name())));
+            } else {
+                newArticle.setSection(null);
+            }
+        }
         newArticle.setCategories(body.categories().stream().map(categoryName -> categoriesRepo.findByName(categoryName).orElseThrow(() -> new NotFoundException(categoryName))).toList());
         List<Tag> tagsToAdd = new ArrayList<>();
         body.tags().forEach(tagName -> {
@@ -73,7 +100,6 @@ public class ArticlesService implements IArticlesDAO {
         if (img != null) {
             newArticle.setImg((String) cloudinary.uploader().upload(img.getBytes(), ObjectUtils.emptyMap()).get("url"));
         }
-        System.out.println(pdf);
         if (pdf != null) {
             newArticle.setPdf((String) cloudinary.uploader().upload(pdf.getBytes(), ObjectUtils.asMap("resource_type", "raw")).get("url"));
 //            newArticle.setPdf(cloudinary.uploader().upload(pdf.getInputStream(), ObjectUtils.asMap("resource_type", "raw")).get("url").toString());

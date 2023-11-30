@@ -12,6 +12,9 @@ public record NewArticleDTO(
 //        UUID authorId,
         @NotBlank(message = "Il contenuto non può essere vuoto.") String content,
         @NotBlank(message = "Il titolo non può essere vuoto.") String title,
+        String eventDate,
+        String section,
+
         List<String> categories,
 //        @NotEmpty(message = "Scegliere almeno una categoria.") List<String> categoryIds,
         List<String> tags

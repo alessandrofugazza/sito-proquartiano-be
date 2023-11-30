@@ -5,7 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import proquartiano.it.proquartianobe.entities.admins.payload.NewAdminDTO;
 import proquartiano.it.proquartianobe.config.EmailSender;
-import proquartiano.it.proquartianobe.enums.Role;
+import proquartiano.it.proquartianobe.enums.ERole;
 import proquartiano.it.proquartianobe.exceptions.BadRequestException;
 import proquartiano.it.proquartianobe.exceptions.NotFoundException;
 
@@ -34,7 +34,7 @@ public class AdminsService implements IAdminsDAO {
         newAdmin.setSignature(body.signature());
         newAdmin.setEmail(body.email());
         newAdmin.setPassword(bcrypt.encode(body.password()));
-        newAdmin.setRole(Role.ADMIN);
+        newAdmin.setRole(ERole.ADMIN);
         Admin savedAdmin = adminsRepo.save(newAdmin);
         emailSender.sendRegistrationEmail(body.email());
         return savedAdmin;

@@ -9,7 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import proquartiano.it.proquartianobe.entities.articles.Article;
-import proquartiano.it.proquartianobe.enums.Role;
+import proquartiano.it.proquartianobe.enums.ERole;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,10 +19,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "admins")
 @Getter
-//@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+// todo ignore other stuff as needed
 @JsonIgnoreProperties({"password"})
 public class Admin implements UserDetails {
     @Id
@@ -39,9 +38,9 @@ public class Admin implements UserDetails {
     @JsonBackReference
     private List<Article> articles;
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private ERole role;
 
-    public void setRole(Role role) {
+    public void setRole(ERole role) {
         this.role = role;
     }
 

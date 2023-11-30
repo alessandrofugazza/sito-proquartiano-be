@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import proquartiano.it.proquartianobe.entities.admins.Admin;
 import proquartiano.it.proquartianobe.entities.categories.Category;
+import proquartiano.it.proquartianobe.entities.sections.Section;
 import proquartiano.it.proquartianobe.entities.tags.Tag;
 
 import java.time.LocalDate;
@@ -28,9 +29,9 @@ public class Article {
     private UUID id;
     @Column(nullable = false)
     private String title;
+    // todo nullable false
     @ManyToOne()
     @JoinColumn(name = "author_id")
-//    @JoinColumn(name = "author_id", nullable = false)
     @JsonManagedReference
     private Admin author;
     @Column(nullable = false)
@@ -38,6 +39,12 @@ public class Article {
     private LocalDateTime date;
     @Column(columnDefinition = "TEXT")
     private String content;
+    @Column
+    private LocalDate eventDate;
+    @ManyToOne()
+    @JoinColumn(name = "section_id")
+    @JsonManagedReference
+    private Section section;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "articles_categories",
             joinColumns = @JoinColumn(name = "article_id"),
@@ -85,14 +92,22 @@ public class Article {
         this.pdf = pdf;
     }
 
-    public static class ArticleBuilder {
-        private Faker fkr = new Faker();
-        private String title = fkr.esports().event();
-        private Admin author = Admin.builder().build();
-        //        private LocalDateTime date = fkr.date().past(365, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        private String content = fkr.book().title();
-        private List<Category> categories = new ArrayList<>();
-        private List<Tag> tags = new ArrayList<>();
-
+    public void setEventDate(LocalDate eventDate) {
+        this.eventDate = eventDate;
     }
+
+    public void setSection(Section section) {
+        this.section = section;
+    }
+
+    //    public static class ArticleBuilder {
+//        private Faker fkr = new Faker();
+//        private String title = fkr.esports().event();
+//        private Admin author = Admin.builder().build();
+//        //        private LocalDateTime date = fkr.date().past(365, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+//        private String content = fkr.book().title();
+//        private List<Category> categories = new ArrayList<>();
+//        private List<Tag> tags = new ArrayList<>();
+//
+//    }
 }
