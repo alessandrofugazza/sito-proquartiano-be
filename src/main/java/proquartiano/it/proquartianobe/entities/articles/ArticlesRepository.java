@@ -5,6 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import proquartiano.it.proquartianobe.entities.sections.Section;
+import proquartiano.it.proquartianobe.enums.ESection;
 
 import java.util.UUID;
 
@@ -22,4 +24,8 @@ public interface ArticlesRepository extends JpaRepository<Article, UUID> {
 
     @Query("SELECT a FROM Article a WHERE a.author.signature = :signature")
     Page<Article> findByAuthor_Username(String signature, Pageable pageable);
+
+    Page<Article> findBySection(Section section, Pageable pageable);
+
+
 }

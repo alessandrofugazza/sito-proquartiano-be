@@ -4,6 +4,8 @@ import org.springframework.data.domain.Page;
 import proquartiano.it.proquartianobe.entities.admins.Admin;
 import proquartiano.it.proquartianobe.entities.articles.payload.NewArticleDTO;
 import org.springframework.web.multipart.MultipartFile;
+import proquartiano.it.proquartianobe.entities.sections.Section;
+import proquartiano.it.proquartianobe.enums.ESection;
 import proquartiano.it.proquartianobe.exceptions.NotFoundException;
 
 import java.io.IOException;
@@ -21,6 +23,9 @@ public interface IArticlesDAO {
     Page<Article> getArticlesByTag(String tag, int page, int size, String orderBy);
 
     Page<Article> getArticlesByAuthor(String author, int page, int size, String orderBy);
+
+
+    Page<Article> getArticlesBySection(Section section, int page, int size, String orderBy);
 
     //// public List<Article> findByCategory(String categoryName);
     public Page<Article> findByTitleContainingIgnoreCase(String query, int page, int size, String orderBy);

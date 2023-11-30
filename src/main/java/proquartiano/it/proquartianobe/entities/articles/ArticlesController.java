@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import proquartiano.it.proquartianobe.entities.admins.Admin;
 import proquartiano.it.proquartianobe.entities.articles.payload.NewArticleDTO;
+import proquartiano.it.proquartianobe.entities.sections.SectionsRepository;
+import proquartiano.it.proquartianobe.enums.ESection;
 import proquartiano.it.proquartianobe.exceptions.BadRequestException;
+import proquartiano.it.proquartianobe.exceptions.NotFoundException;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,6 +29,9 @@ import java.util.UUID;
 public class ArticlesController {
     @Autowired
     private ArticlesService articlesService;
+
+    @Autowired
+    private SectionsRepository sectionsRepo;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -50,6 +56,27 @@ public class ArticlesController {
         } else {
             return articlesService.getArticles(page, size, orderBy);
         }
+    }
+
+    @GetMapping("/manifestazioni/mercatino-dei-libri")
+    public Page<Article> getMercatinoArticles(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size,
+                                              @RequestParam(defaultValue = "date") String orderBy) {
+        return articlesService.getArticlesBySection(sectionsRepo.findByName(ESection.MERCATINO_LIBRI).orElseThrow(() -> new NotFoundException(ESection.MERCATINO_LIBRI.name())), page, size, orderBy);
+    }
+
+    @GetMapping("/manifestazioni/sagra")
+    public Page<Article> getSagraArticles(@RequestParam(defaultValue = "0") int page,
+                                          @RequestParam(defaultValue = "10") int size,
+                                          @RequestParam(defaultValue = "date") String orderBy) {
+        return articlesService.getArticlesBySection(sectionsRepo.findByName(ESection.SAGRA).orElseThrow(() -> new NotFoundException(ESection.SAGRA.name())), page, size, orderBy);
+    }
+
+    @GetMapping("/manifestazioni/concorso-cori")
+    public Page<Article> getConcorsoArticles(@RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(defaultValue = "10") int size,
+                                             @RequestParam(defaultValue = "date") String orderBy) {
+        return articlesService.getArticlesBySection(sectionsRepo.findByName(ESection.CONCORSO_CORI).orElseThrow(() -> new NotFoundException(ESection.CONCORSO_CORI.name())), page, size, orderBy);
     }
 
     @GetMapping("/search")

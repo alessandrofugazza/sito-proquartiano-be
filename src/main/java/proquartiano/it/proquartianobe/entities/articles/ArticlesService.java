@@ -7,12 +7,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import proquartiano.it.proquartianobe.entities.admins.Admin;
 import proquartiano.it.proquartianobe.entities.articles.payload.NewArticleDTO;
+import proquartiano.it.proquartianobe.entities.sections.Section;
 import proquartiano.it.proquartianobe.entities.sections.SectionsRepository;
 import proquartiano.it.proquartianobe.entities.tags.Tag;
 import proquartiano.it.proquartianobe.enums.ESection;
@@ -23,9 +23,7 @@ import proquartiano.it.proquartianobe.entities.tags.TagsRepository;
 import proquartiano.it.proquartianobe.security.JWTTools;
 
 import java.io.IOException;
-import java.io.NotActiveException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -60,7 +58,6 @@ public class ArticlesService implements IArticlesDAO {
         newArticle.setContent(body.content());
         newArticle.setTitle(body.title());
         // todo not proud of this either
-        System.out.println(body.eventDate());
         if (body.eventDate() != null && !body.eventDate().isEmpty()) {
             newArticle.setEventDate(LocalDate.parse(body.eventDate()));
         } else {
@@ -164,6 +161,12 @@ public class ArticlesService implements IArticlesDAO {
     public Page<Article> getArticlesByAuthor(String author, int page, int size, String orderBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
         return articlesRepo.findByAuthor_Username(author, pageable);
+    }
+
+    @Override
+    public Page<Article> getArticlesBySection(Section section, int page, int size, String orderBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
+        return articlesRepo.findBySection(section, pageable);
     }
 
     @Override
