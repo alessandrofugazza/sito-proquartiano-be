@@ -9,6 +9,7 @@ import proquartiano.it.proquartianobe.enums.ESection;
 import proquartiano.it.proquartianobe.exceptions.NotFoundException;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 public interface IArticlesDAO {
@@ -22,7 +23,11 @@ public interface IArticlesDAO {
 
     Page<Article> getArticles(String category, String tag, String author, String sectionName, int page, int size, String orderBy);
 
-    Page<Article> getComingUpArticles(String sectionName, int page, int size, String orderBy);
+
+    Page<Article> getUpcomingEvents(String sectionName, int page, int size, String orderBy);
+
+
+    List<Article> getUpcomingEventsWithinOneYear();
 
     //// public List<Article> findByCategory(String categoryName);
     public Page<Article> findByTitleContainingIgnoreCase(String query, int page, int size, String orderBy);

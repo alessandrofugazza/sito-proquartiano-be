@@ -54,7 +54,7 @@ public class Article {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "articles_tags",
             joinColumns = @JoinColumn(name = "article_id"),
-            inverseJoinColumns = @JoinColumn(name = "tags_id"))
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
     @JsonManagedReference
     private List<Tag> tags;
     private String img;

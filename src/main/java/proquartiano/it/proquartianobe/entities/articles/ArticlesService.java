@@ -97,7 +97,8 @@ public class ArticlesService implements IArticlesDAO {
             newArticle.setImg((String) cloudinary.uploader().upload(img.getBytes(), ObjectUtils.emptyMap()).get("url"));
         }
         if (pdf != null) {
-            newArticle.setPdf((String) cloudinary.uploader().upload(pdf.getBytes(), ObjectUtils.asMap("resource_type", "raw")).get("url"));
+            newArticle.setPdf((String) cloudinary.uploader().upload(pdf.getBytes(),
+                    ObjectUtils.asMap("resource_type", "auto", "format", "pdf")).get("url"));
 //            newArticle.setPdf(cloudinary.uploader().upload(pdf.getInputStream(), ObjectUtils.asMap("resource_type", "raw")).get("url").toString());
         }
         return articlesRepo.save(newArticle);
@@ -161,9 +162,15 @@ public class ArticlesService implements IArticlesDAO {
     }
 
     @Override
-    public Page<Article> getComingUpArticles(String sectionName, int page, int size, String orderBy) {
+    public Page<Article> getUpcomingEvents(String sectionName, int page, int size, String orderBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, orderBy));
         return articlesRepo.findWithEventDate(pageable);
+    }
+
+    @Override
+    public List<Article> getUpcomingEventsWithinOneYear() {
+        LocalDate oneYearFromNow = LocalDate.now().plusYears(1);
+        return articlesRepo.findUpcomingEventsWithinOneYear(oneYearFromNow);
     }
 
 //    @Override

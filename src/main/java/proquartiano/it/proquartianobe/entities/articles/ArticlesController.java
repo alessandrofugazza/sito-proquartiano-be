@@ -54,13 +54,19 @@ public class ArticlesController {
 
     @GetMapping("/coming-up")
     public Page<Article> getComingUpArticles(@RequestParam(defaultValue = "0") int page,
-                                             @RequestParam(defaultValue = "5") int size,
+                                             @RequestParam(defaultValue = "3") int size,
                                              @RequestParam(defaultValue = "eventDate") String orderBy,
                                              @RequestParam(required = false) String sectionName
     ) {
-        return articlesService.getComingUpArticles(sectionName, page, size, orderBy);
+        return articlesService.getUpcomingEvents(sectionName, page, size, orderBy);
     }
 
+    @GetMapping("/coming-up/all")
+    public List<Article> getAllComingUpArticles() {
+        return articlesService.getUpcomingEventsWithinOneYear();
+    }
+
+    // learn consumes
     @PostMapping(value = "", consumes = "multipart/form-data")
     @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
@@ -83,6 +89,7 @@ public class ArticlesController {
     }
 
     @PutMapping(value = "/{id}", consumes = "multipart/form-data")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Article findByIdAndUpdate(@PathVariable UUID id, @RequestPart("article") @Validated String articleJson, @RequestParam(value = "img", required = false) MultipartFile img, MultipartFile pdf, BindingResult validation) {
         if (validation.hasErrors()) {
             throw new BadRequestException(validation.getAllErrors());
@@ -103,6 +110,7 @@ public class ArticlesController {
 
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void findByIdAndDelete(@PathVariable UUID id) {
         articlesService.findByIdAndDelete(id);
