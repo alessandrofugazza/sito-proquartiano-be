@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import proquartiano.it.proquartianobe.entities.admins.Admin;
 import proquartiano.it.proquartianobe.entities.articles.payload.NewArticleDTO;
+import proquartiano.it.proquartianobe.entities.categories.Category;
 import proquartiano.it.proquartianobe.entities.sections.SectionsRepository;
 import proquartiano.it.proquartianobe.entities.tags.Tag;
 import proquartiano.it.proquartianobe.enums.ESection;
@@ -197,9 +198,21 @@ public class ArticlesService implements IArticlesDAO {
 
     @Override
     public void findByIdAndDelete(UUID id) throws NotFoundException {
-        Article found = this.findById(id);
-        articlesRepo.delete(found);
+        Article article = articlesRepo.findById(id).orElseThrow(() -> new NotFoundException(id));
+
+        for (Category category : article.getCategories()) {
+            category.getArticles().remove(article);
+            categoriesRepo.save(category);
+        }
+
+        articlesRepo.delete(article);
     }
+
+//    @Override
+//    public void findByIdAndDelete(UUID id) throws NotFoundException {
+//        Article found = this.findById(id);
+//        articlesRepo.delete(found);
+//    }
 
 
 //    @Override
