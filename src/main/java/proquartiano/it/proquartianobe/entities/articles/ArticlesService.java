@@ -43,12 +43,6 @@ public class ArticlesService implements IArticlesDAO {
     @Autowired
     private JWTTools jwtTools;
 
-    public Admin getAuthorFromToken(String token) {
-        UUID adminId = UUID.fromString(jwtTools.extractIdFromToken(token));
-        return adminsRepo.findById(adminId)
-                .orElseThrow(() -> new NotFoundException("Admin not found with ID: " + adminId));
-    }
-
     @Override
     public Article save(NewArticleDTO body, MultipartFile img, MultipartFile pdf, Admin currentAdmin) throws IOException {
         Article newArticle = new Article();
@@ -150,9 +144,10 @@ public class ArticlesService implements IArticlesDAO {
             return articlesRepo.findByAuthor_Username(author, pageable);
         } else if (sectionName != null) {
             ESection section = switch (sectionName) {
-                case "mercatino" -> ESection.MERCATINO_LIBRI;
+                // q did i break something?
+                case "mercatino-dei-libri" -> ESection.MERCATINO_LIBRI;
                 case "sagra" -> ESection.SAGRA;
-                case "concorso" -> ESection.CONCORSO_CORI;
+                case "concorso-corale" -> ESection.CONCORSO_CORI;
                 default -> null;
             };
             return articlesRepo.findBySection(section, pageable);
@@ -164,7 +159,17 @@ public class ArticlesService implements IArticlesDAO {
     @Override
     public Page<Article> getUpcomingEvents(String sectionName, int page, int size, String orderBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, orderBy));
-        return articlesRepo.findWithEventDate(pageable);
+        if (sectionName != null) {
+            ESection section = switch (sectionName) {
+                case "mercatino-dei-libri" -> ESection.MERCATINO_LIBRI;
+                case "sagra" -> ESection.SAGRA;
+                case "concorso-corale" -> ESection.CONCORSO_CORI;
+                default -> null;
+            };
+            return articlesRepo.findWithEventDateBySection(section, pageable);
+        } else {
+            return articlesRepo.findWithEventDate(pageable);
+        }
     }
 
     @Override

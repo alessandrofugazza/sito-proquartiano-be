@@ -34,6 +34,9 @@ public interface ArticlesRepository extends JpaRepository<Article, UUID> {
     @Query("SELECT a FROM Article a WHERE a.eventDate IS NOT NULL AND a.eventDate >= CURRENT_DATE")
     Page<Article> findWithEventDate(Pageable pageable);
 
+    @Query("SELECT a FROM Article a WHERE a.section.name = :sectionName AND a.eventDate IS NOT NULL AND a.eventDate >= CURRENT_DATE")
+    Page<Article> findWithEventDateBySection(ESection sectionName, Pageable pageable);
+
     @Query("SELECT a FROM Article a WHERE a.eventDate IS NOT NULL AND a.eventDate >= CURRENT_DATE AND a.eventDate <= :oneYearFromNow ORDER BY a.eventDate ASC")
     List<Article> findUpcomingEventsWithinOneYear(@Param("oneYearFromNow") LocalDate oneYearFromNow);
 
