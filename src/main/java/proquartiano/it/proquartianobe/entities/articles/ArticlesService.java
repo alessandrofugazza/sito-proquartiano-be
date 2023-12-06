@@ -204,6 +204,10 @@ public class ArticlesService implements IArticlesDAO {
             category.getArticles().remove(article);
             categoriesRepo.save(category);
         }
+        for (Tag tag : article.getTags()) {
+            tag.getArticles().remove(article);
+            tagsRepo.save(tag);
+        }
 
         articlesRepo.delete(article);
     }
