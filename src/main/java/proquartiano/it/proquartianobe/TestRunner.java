@@ -18,8 +18,8 @@ public class TestRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-//        sectionsRepo.save(new Section(ESection.MERCATINO_LIBRI));
-//        sectionsRepo.save(new Section(ESection.SAGRA));
-//        sectionsRepo.save(new Section(ESection.CONCORSO_CORI));
+        sectionsRepo.save(new Section(ESection.MERCATINO_LIBRI));
+        sectionsRepo.save(new Section(ESection.SAGRA));
+        sectionsRepo.save(new Section(ESection.CONCORSO_CORI));
     }
 }
