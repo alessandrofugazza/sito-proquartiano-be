@@ -50,6 +50,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         // TODO: this.
         return matcher.match("/auth/**", servletPath) ||
                 "GET".equalsIgnoreCase(method) && matcher.match("/articoli/**", servletPath);
+//                "POST".equalsIgnoreCase(method) && matcher.match("/admins/**", servletPath);
 //                "GET".equalsIgnoreCase(method) && matcher.match("/manifestazioni/**", servletPath);
 //                matcher.match("/articles/**", request.getServletPath());
 //                matcher.match("/categories/**", request.getServletPath()) ||
