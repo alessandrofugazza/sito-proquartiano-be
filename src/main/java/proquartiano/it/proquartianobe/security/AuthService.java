@@ -18,10 +18,12 @@ public class AuthService {
     @Autowired
     private PasswordEncoder bcrypt;
 
-    public String authenticateAdmin(AdminLoginDTO body) {
+    public AdminLoginSuccessDTO authenticateAdmin(AdminLoginDTO body) {
         Admin admin = adminsService.findByEmail(body.email());
         if (bcrypt.matches(body.password(), admin.getPassword())) {
-            return jwtTools.createToken(admin);
+            String token = jwtTools.createToken(admin);
+            String username = admin.getSignature();
+            return new AdminLoginSuccessDTO(token, username);
         } else {
             throw new UnauthorizedException("Credenziali non valide.");
         }

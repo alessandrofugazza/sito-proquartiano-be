@@ -14,6 +14,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public AdminLoginSuccessDTO login(@RequestBody AdminLoginDTO body) {
-        return new AdminLoginSuccessDTO(authService.authenticateAdmin(body));
+        // q is this bad practice?
+        return authService.authenticateAdmin(body);
     }
 }
