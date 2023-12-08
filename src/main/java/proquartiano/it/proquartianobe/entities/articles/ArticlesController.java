@@ -43,7 +43,6 @@ public class ArticlesController {
                                      @RequestParam(required = false) String autore,
                                      @RequestParam(required = false) String section
     ) {
-        // todo multiple search params if needed
         return articlesService.getArticles(categoria, tag, autore, section, page, size, orderBy);
     }
 
@@ -87,6 +86,19 @@ public class ArticlesController {
             }
         }
     }
+
+//    @GetMapping("/my-articles")
+//    @PreAuthorize("hasAuthority('ADMIN')")
+//    public Page<Article> getMyArticles(@RequestParam(defaultValue = "0") int page,
+//                                       @RequestParam(defaultValue = "10") int size,
+//                                       @RequestParam(defaultValue = "date") String orderBy,
+//                                       @RequestParam(required = false) String categoria,
+//                                       @RequestParam(required = false) String tag,
+//                                       @RequestParam(required = false) String section,
+//                                       @AuthenticationPrincipal Admin currentAdmin
+//    ) {
+//        return articlesService.getArticles(categoria, tag, section, currentAdmin.getSignature(), page, size, orderBy);
+//    }
 
     @PutMapping(value = "/{id}", consumes = "multipart/form-data")
     @PreAuthorize("hasAuthority('ADMIN')")
