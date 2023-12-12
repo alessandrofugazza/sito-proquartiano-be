@@ -72,7 +72,7 @@ public class ArticlesController {
     public Article saveArticle(
             @RequestPart("article") @Validated String articleJson,
             @RequestParam(value = "img", required = false) MultipartFile[] img,
-            @RequestParam(value = "pdf", required = false) MultipartFile pdf,
+            @RequestParam(value = "pdf", required = false) MultipartFile[] pdf,
             @AuthenticationPrincipal Admin currentAdmin,
             BindingResult validation) {
         if (validation.hasErrors()) {

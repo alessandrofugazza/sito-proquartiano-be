@@ -58,7 +58,7 @@ public class Article {
     @JsonManagedReference
     private List<Tag> tags;
     private String[] img;
-    private String pdf;
+    private String[] pdf;
 
     public void setTitle(String title) {
         this.title = title;
@@ -88,7 +88,7 @@ public class Article {
         this.img = img;
     }
 
-    public void setPdf(String pdf) {
+    public void setPdf(String[] pdf) {
         this.pdf = pdf;
     }
 

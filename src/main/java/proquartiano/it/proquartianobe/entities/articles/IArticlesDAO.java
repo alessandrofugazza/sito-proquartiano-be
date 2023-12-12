@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface IArticlesDAO {
-    public Article save(NewArticleDTO article, MultipartFile[] img, MultipartFile pdf, Admin currentAdmin) throws IOException;
+    public Article save(NewArticleDTO article, MultipartFile[] img, MultipartFile[] pdf, Admin currentAdmin) throws IOException;
 
 //    Article findByIdAndUpdate(UUID id, NewArticleDTO body, MultipartFile img, MultipartFile pdf) throws NotFoundException, IOException;
 

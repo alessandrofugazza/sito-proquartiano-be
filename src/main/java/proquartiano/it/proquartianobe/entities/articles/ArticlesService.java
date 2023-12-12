@@ -45,7 +45,7 @@ public class ArticlesService implements IArticlesDAO {
     private JWTTools jwtTools;
 
     @Override
-    public Article save(NewArticleDTO body, MultipartFile[] img, MultipartFile pdf, Admin currentAdmin) throws IOException {
+    public Article save(NewArticleDTO body, MultipartFile[] img, MultipartFile[] pdf, Admin currentAdmin) throws IOException {
         Article newArticle = new Article();
 
         newArticle.setAuthor(currentAdmin);
@@ -98,11 +98,18 @@ public class ArticlesService implements IArticlesDAO {
             }
             newArticle.setImg(imgUrls.toArray(new String[0]));
         }
-        if (pdf != null) {
-            newArticle.setPdf((String) cloudinary.uploader().upload(pdf.getBytes(),
-                    ObjectUtils.asMap("resource_type", "auto", "format", "pdf")).get("url"));
-//            newArticle.setPdf(cloudinary.uploader().upload(pdf.getInputStream(), ObjectUtils.asMap("resource_type", "raw")).get("url").toString());
+        if (pdf != null && pdf.length > 0) {
+            List<String> pdfUrls = new ArrayList<>();
+
+            for (MultipartFile file : pdf) {
+                if (!file.isEmpty()) {
+                    pdfUrls.add(((String) cloudinary.uploader().upload(file.getBytes(),
+                            ObjectUtils.asMap("resource_type", "auto", "format", "pdf")).get("url")));
+                }
+            }
+            newArticle.setPdf(pdfUrls.toArray(new String[0]));
         }
+//            newArticle.setPdf(cloudinary.uploader().upload(pdf.getInputStream(), ObjectUtils.asMap("resource_type", "raw")).get("url").toString());
         return articlesRepo.save(newArticle);
     }
 
