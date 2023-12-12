@@ -71,7 +71,7 @@ public class ArticlesController {
     @ResponseStatus(HttpStatus.CREATED)
     public Article saveArticle(
             @RequestPart("article") @Validated String articleJson,
-            @RequestParam(value = "img", required = false) MultipartFile img,
+            @RequestParam(value = "img", required = false) MultipartFile[] img,
             @RequestParam(value = "pdf", required = false) MultipartFile pdf,
             @AuthenticationPrincipal Admin currentAdmin,
             BindingResult validation) {
@@ -100,20 +100,20 @@ public class ArticlesController {
 //        return articlesService.getArticles(categoria, tag, section, currentAdmin.getSignature(), page, size, orderBy);
 //    }
 
-    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public Article findByIdAndUpdate(@PathVariable UUID id, @RequestPart("article") @Validated String articleJson, @RequestParam(value = "img", required = false) MultipartFile img, MultipartFile pdf, BindingResult validation) {
-        if (validation.hasErrors()) {
-            throw new BadRequestException(validation.getAllErrors());
-        } else {
-            try {
-                NewArticleDTO article = objectMapper.readValue(articleJson, NewArticleDTO.class);
-                return articlesService.findByIdAndUpdate(id, article, img, pdf);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
+//    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
+//    @PreAuthorize("hasAuthority('ADMIN')")
+//    public Article findByIdAndUpdate(@PathVariable UUID id, @RequestPart("article") @Validated String articleJson, @RequestParam(value = "img", required = false) MultipartFile img, MultipartFile pdf, BindingResult validation) {
+//        if (validation.hasErrors()) {
+//            throw new BadRequestException(validation.getAllErrors());
+//        } else {
+//            try {
+//                NewArticleDTO article = objectMapper.readValue(articleJson, NewArticleDTO.class);
+//                return articlesService.findByIdAndUpdate(id, article, img, pdf);
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
+//    }
 
     @GetMapping("/{id}")
     public Article findById(@PathVariable UUID id) {

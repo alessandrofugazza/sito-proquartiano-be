@@ -57,7 +57,7 @@ public class Article {
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     @JsonManagedReference
     private List<Tag> tags;
-    private String img;
+    private String[] img;
     private String pdf;
 
     public void setTitle(String title) {
@@ -84,7 +84,7 @@ public class Article {
         this.tags = tags;
     }
 
-    public void setImg(String img) {
+    public void setImg(String[] img) {
         this.img = img;
     }
 

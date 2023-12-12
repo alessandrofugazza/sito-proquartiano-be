@@ -45,7 +45,7 @@ public class ArticlesService implements IArticlesDAO {
     private JWTTools jwtTools;
 
     @Override
-    public Article save(NewArticleDTO body, MultipartFile img, MultipartFile pdf, Admin currentAdmin) throws IOException {
+    public Article save(NewArticleDTO body, MultipartFile[] img, MultipartFile pdf, Admin currentAdmin) throws IOException {
         Article newArticle = new Article();
 
         newArticle.setAuthor(currentAdmin);
@@ -88,8 +88,15 @@ public class ArticlesService implements IArticlesDAO {
             }
         });
         newArticle.setTags(tagsToAdd);
-        if (img != null) {
-            newArticle.setImg((String) cloudinary.uploader().upload(img.getBytes(), ObjectUtils.emptyMap()).get("url"));
+        if (img != null && img.length > 0) {
+            List<String> imgUrls = new ArrayList<>();
+
+            for (MultipartFile file : img) {
+                if (!file.isEmpty()) {
+                    imgUrls.add(((String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url")));
+                }
+            }
+            newArticle.setImg(imgUrls.toArray(new String[0]));
         }
         if (pdf != null) {
             newArticle.setPdf((String) cloudinary.uploader().upload(pdf.getBytes(),
@@ -99,36 +106,36 @@ public class ArticlesService implements IArticlesDAO {
         return articlesRepo.save(newArticle);
     }
 
-    @Override
-    @Transactional
-    public Article findByIdAndUpdate(UUID id, NewArticleDTO body, MultipartFile img, MultipartFile pdf) throws NotFoundException, IOException {
-        // TODO: only change actually modified fields
-        Article found = this.findById(id);
-        found.setContent(body.content());
-        found.setTitle(body.title());
-        found.getCategories().clear();
-        found.getCategories().addAll(
-                body.categories().stream()
-                        .map(categoryName -> categoriesRepo.findByName(categoryName)
-                                .orElseThrow(() -> new NotFoundException(categoryName)))
-                        .toList()
-        );
-
-        found.getTags().clear();
-        found.getTags().addAll(
-                body.tags().stream()
-                        .map(tagName -> tagsRepo.findByName(tagName)
-                                .orElseThrow(() -> new NotFoundException(tagName)))
-                        .toList()
-        );
-        String imgUrl = found.getImg();
-        String[] parts = imgUrl.split("/");
-        String imgId = parts[parts.length - 1].split("\\.")[0];
-        cloudinary.uploader().destroy(imgId, ObjectUtils.emptyMap());
-
-        found.setImg((String) cloudinary.uploader().upload(img.getBytes(), ObjectUtils.emptyMap()).get("url"));
-        return articlesRepo.save(found);
-    }
+//    @Override
+//    @Transactional
+//    public Article findByIdAndUpdate(UUID id, NewArticleDTO body, MultipartFile img, MultipartFile pdf) throws NotFoundException, IOException {
+//        // TODO: only change actually modified fields
+//        Article found = this.findById(id);
+//        found.setContent(body.content());
+//        found.setTitle(body.title());
+//        found.getCategories().clear();
+//        found.getCategories().addAll(
+//                body.categories().stream()
+//                        .map(categoryName -> categoriesRepo.findByName(categoryName)
+//                                .orElseThrow(() -> new NotFoundException(categoryName)))
+//                        .toList()
+//        );
+//
+//        found.getTags().clear();
+//        found.getTags().addAll(
+//                body.tags().stream()
+//                        .map(tagName -> tagsRepo.findByName(tagName)
+//                                .orElseThrow(() -> new NotFoundException(tagName)))
+//                        .toList()
+//        );
+//        String imgUrl = found.getImg();
+//        String[] parts = imgUrl.split("/");
+//        String imgId = parts[parts.length - 1].split("\\.")[0];
+//        cloudinary.uploader().destroy(imgId, ObjectUtils.emptyMap());
+//
+//        found.setImg((String) cloudinary.uploader().upload(img.getBytes(), ObjectUtils.emptyMap()).get("url"));
+//        return articlesRepo.save(found);
+//    }
 
 //    public String uploadImage(MultipartFile file) throws IOException {
 //        return (String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
