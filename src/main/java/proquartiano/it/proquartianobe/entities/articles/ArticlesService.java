@@ -52,8 +52,8 @@ public class ArticlesService implements IArticlesDAO {
         newArticle.setContent(body.content());
         newArticle.setTitle(body.title());
         // todo not proud of this either
-        if (body.eventDate() != null && !body.eventDate().isEmpty()) {
-            newArticle.setEventDate(LocalDate.parse(body.eventDate()));
+        if (body.eventDate() != null) {
+            newArticle.setEventDate(body.eventDate());
         } else {
             newArticle.setEventDate(null);
         }
