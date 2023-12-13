@@ -113,40 +113,66 @@ public class ArticlesService implements IArticlesDAO {
         return articlesRepo.save(newArticle);
     }
 
-//    @Override
-//    @Transactional
-//    public Article findByIdAndUpdate(UUID id, NewArticleDTO body, MultipartFile img, MultipartFile pdf) throws NotFoundException, IOException {
-//        // TODO: only change actually modified fields
-//        Article found = this.findById(id);
-//        found.setContent(body.content());
-//        found.setTitle(body.title());
-//        found.getCategories().clear();
-//        found.getCategories().addAll(
-//                body.categories().stream()
-//                        .map(categoryName -> categoriesRepo.findByName(categoryName)
-//                                .orElseThrow(() -> new NotFoundException(categoryName)))
-//                        .toList()
-//        );
-//
-//        found.getTags().clear();
-//        found.getTags().addAll(
-//                body.tags().stream()
-//                        .map(tagName -> tagsRepo.findByName(tagName)
-//                                .orElseThrow(() -> new NotFoundException(tagName)))
-//                        .toList()
-//        );
+    @Override
+    @Transactional
+    public Article findByIdAndUpdate(UUID id, NewArticleDTO body, MultipartFile[] img, MultipartFile[] pdf) throws NotFoundException, IOException {
+        // TODO: only change actually modified fields
+        Article found = this.findById(id);
+        found.setContent(body.content());
+        found.setTitle(body.title());
+        found.getCategories().clear();
+        found.getCategories().addAll(
+                body.categories().stream()
+                        .map(categoryName -> categoriesRepo.findByName(categoryName)
+                                .orElseThrow(() -> new NotFoundException(categoryName)))
+                        .toList()
+        );
+
+        found.getTags().clear();
+        found.getTags().addAll(
+                body.tags().stream()
+                        .map(tagName -> tagsRepo.findByName(tagName)
+                                .orElseThrow(() -> new NotFoundException(tagName)))
+                        .toList()
+        );
+        // todo this
 //        String imgUrl = found.getImg();
 //        String[] parts = imgUrl.split("/");
 //        String imgId = parts[parts.length - 1].split("\\.")[0];
 //        cloudinary.uploader().destroy(imgId, ObjectUtils.emptyMap());
-//
-//        found.setImg((String) cloudinary.uploader().upload(img.getBytes(), ObjectUtils.emptyMap()).get("url"));
-//        return articlesRepo.save(found);
-//    }
 
-//    public String uploadImage(MultipartFile file) throws IOException {
-//        return (String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
-//    }
+        // q what is even the point of this check?
+        if (img != null && img.length > 0) {
+            List<String> imgUrls = new ArrayList<>();
+
+            for (MultipartFile file : img) {
+                if (!file.isEmpty()) {
+                    imgUrls.add(((String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url")));
+                }
+            }
+            found.setImg(imgUrls.toArray(new String[0]));
+        } else {
+            found.setImg(null);
+        }
+        if (pdf != null && pdf.length > 0) {
+            List<String> pdfUrls = new ArrayList<>();
+
+            for (MultipartFile file : pdf) {
+                if (!file.isEmpty()) {
+                    pdfUrls.add(((String) cloudinary.uploader().upload(file.getBytes(),
+                            ObjectUtils.asMap("resource_type", "auto", "format", "pdf")).get("url")));
+                }
+            }
+            found.setPdf(pdfUrls.toArray(new String[0]));
+        } else {
+            found.setPdf(null);
+        }
+        return articlesRepo.save(found);
+    }
+
+    public String uploadImage(MultipartFile file) throws IOException {
+        return (String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
+    }
 
     @Override
     public Page<Article> getArticles(String category, String tag, String author, String sectionName, int page, int size, String orderBy) {
