@@ -136,11 +136,14 @@ public class ArticlesService implements IArticlesDAO {
                         .toList()
         );
         // todo this
-//        String imgUrl = found.getImg();
-//        String[] parts = imgUrl.split("/");
-//        String imgId = parts[parts.length - 1].split("\\.")[0];
-//        cloudinary.uploader().destroy(imgId, ObjectUtils.emptyMap());
-
+        String[] existingImgUrls = found.getImg();
+        if (existingImgUrls != null) {
+            for (String imgUrl : existingImgUrls) {
+                String[] parts = imgUrl.split("/");
+                String imgId = parts[parts.length - 1].split("\\.")[0];
+                cloudinary.uploader().destroy(imgId, ObjectUtils.emptyMap());
+            }
+        }
         // q what is even the point of this check?
         if (img != null && img.length > 0) {
             List<String> imgUrls = new ArrayList<>();
@@ -153,6 +156,14 @@ public class ArticlesService implements IArticlesDAO {
             found.setImg(imgUrls.toArray(new String[0]));
         } else {
             found.setImg(null);
+        }
+        String[] existingPdfUrls = found.getPdf();
+        if (existingPdfUrls != null) {
+            for (String pdfUrl : existingPdfUrls) {
+                String[] parts = pdfUrl.split("/");
+                String pdfId = parts[parts.length - 1].split("\\.")[0];
+                cloudinary.uploader().destroy(pdfId, ObjectUtils.emptyMap());
+            }
         }
         if (pdf != null && pdf.length > 0) {
             List<String> pdfUrls = new ArrayList<>();
@@ -170,9 +181,9 @@ public class ArticlesService implements IArticlesDAO {
         return articlesRepo.save(found);
     }
 
-    public String uploadImage(MultipartFile file) throws IOException {
-        return (String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
-    }
+//    public String uploadImage(MultipartFile file) throws IOException {
+//        return (String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
+//    }
 
     @Override
     public Page<Article> getArticles(String category, String tag, String author, String sectionName, int page, int size, String orderBy) {
@@ -237,7 +248,7 @@ public class ArticlesService implements IArticlesDAO {
     }
 
     @Override
-    public void findByIdAndDelete(UUID id) throws NotFoundException {
+    public void findByIdAndDelete(UUID id) throws NotFoundException, IOException {
         Article article = articlesRepo.findById(id).orElseThrow(() -> new NotFoundException(id));
 
         for (Category category : article.getCategories()) {
@@ -247,6 +258,26 @@ public class ArticlesService implements IArticlesDAO {
         for (Tag tag : article.getTags()) {
             tag.getArticles().remove(article);
             tagsRepo.save(tag);
+        }
+
+        // q should be empty array instead of null?
+        // q is being a web developer worse for your health than smoking?
+        String[] existingImgUrls = article.getImg();
+        if (existingImgUrls != null) {
+            for (String imgUrl : existingImgUrls) {
+                String[] parts = imgUrl.split("/");
+                String imgId = parts[parts.length - 1].split("\\.")[0];
+                cloudinary.uploader().destroy(imgId, ObjectUtils.emptyMap());
+            }
+        }
+
+        String[] existingPdfUrls = article.getPdf();
+        if (existingPdfUrls != null) {
+            for (String pdfUrl : existingPdfUrls) {
+                String[] parts = pdfUrl.split("/");
+                String pdfId = parts[parts.length - 1].split("\\.")[0];
+                cloudinary.uploader().destroy(pdfId, ObjectUtils.emptyMap());
+            }
         }
 
         articlesRepo.delete(article);

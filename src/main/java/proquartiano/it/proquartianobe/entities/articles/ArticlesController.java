@@ -124,7 +124,7 @@ public class ArticlesController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void findByIdAndDelete(@PathVariable UUID id) {
+    public void findByIdAndDelete(@PathVariable UUID id) throws IOException {
         articlesService.findByIdAndDelete(id);
     }
 

@@ -32,7 +32,7 @@ public interface IArticlesDAO {
     //// public List<Article> findByCategory(String categoryName);
     public Page<Article> findByTitleContainingIgnoreCase(String query, int page, int size, String orderBy);
 
-    public void findByIdAndDelete(UUID id);
+    public void findByIdAndDelete(UUID id) throws IOException;
 
 //    public Article findByIdAndUpdate(UUID id, NewArticleDTO article);
 
