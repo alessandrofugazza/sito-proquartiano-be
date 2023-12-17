@@ -17,8 +17,14 @@ import java.util.UUID;
 public interface ArticlesRepository extends JpaRepository<Article, UUID> {
     //    @Query("SELECT a FROM Article a JOIN a.categories c WHERE c.name = :categoryName")
 //    public Set<Article> findByCategory(String categoryName);
-    @Query("SELECT a FROM Article a WHERE LOWER(a.title) LIKE LOWER(CONCAT('%', :query, '%'))")
-    Page<Article> findByTitleContainingIgnoreCase(String query, Pageable pageable);
+    @Query("SELECT a FROM Article a " +
+            "LEFT JOIN a.categories c " +
+            "LEFT JOIN a.tags t " +
+            "WHERE LOWER(a.title) LIKE LOWER(CONCAT('%', :query, '%')) " +
+            "OR LOWER(c.name) LIKE LOWER(CONCAT('%', :query, '%')) " +
+            "OR LOWER(t.name) LIKE LOWER(CONCAT('%', :query, '%'))")
+    Page<Article> findByTitleCategoriesTagsContainingIgnoreCase(String query, Pageable pageable);
+
 
     // todo are those 3 needed?
     Page<Article> findByCategories_Name(String category, Pageable pageable);

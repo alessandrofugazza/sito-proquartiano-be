@@ -237,9 +237,9 @@ public class ArticlesService implements IArticlesDAO {
 //    }
 
     @Override
-    public Page<Article> findByTitleContainingIgnoreCase(String query, int page, int size, String orderBy) {
+    public Page<Article> findByTitleCategoriesTagsContainingIgnoreCase(String query, int page, int size, String orderBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
-        return articlesRepo.findByTitleContainingIgnoreCase(query, pageable);
+        return articlesRepo.findByTitleCategoriesTagsContainingIgnoreCase(query, pageable);
     }
 
     @Override

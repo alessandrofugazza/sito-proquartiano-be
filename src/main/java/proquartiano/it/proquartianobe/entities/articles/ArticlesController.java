@@ -46,9 +46,10 @@ public class ArticlesController {
         return articlesService.getArticles(categoria, tag, autore, section, page, size, orderBy);
     }
 
+    //    q should need more search options?
     @GetMapping("/search")
-    public Page<Article> findByTitleContainingIgnoreCase(@RequestParam String q, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "date") String orderBy) {
-        return articlesService.findByTitleContainingIgnoreCase(q, page, size, orderBy);
+    public Page<Article> findByTitleCategoriesTagsContainingIgnoreCase(@RequestParam String q, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "date") String orderBy) {
+        return articlesService.findByTitleCategoriesTagsContainingIgnoreCase(q, page, size, orderBy);
     }
 
     @GetMapping("/coming-up")

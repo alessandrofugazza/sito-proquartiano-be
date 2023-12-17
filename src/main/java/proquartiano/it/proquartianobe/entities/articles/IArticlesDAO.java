@@ -30,7 +30,7 @@ public interface IArticlesDAO {
     List<Article> getUpcomingEventsWithinOneYear();
 
     //// public List<Article> findByCategory(String categoryName);
-    public Page<Article> findByTitleContainingIgnoreCase(String query, int page, int size, String orderBy);
+    public Page<Article> findByTitleCategoriesTagsContainingIgnoreCase(String query, int page, int size, String orderBy);
 
     public void findByIdAndDelete(UUID id) throws IOException;
 
