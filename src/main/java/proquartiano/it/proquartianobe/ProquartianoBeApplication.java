@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 // ? are the api responses right
+// todo Using generated security password:
 @SpringBootApplication
 public class ProquartianoBeApplication {
 
