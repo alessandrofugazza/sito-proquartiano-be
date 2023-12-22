@@ -45,15 +45,15 @@ public class ArticlesService implements IArticlesDAO {
     private JWTTools jwtTools;
 
     @Override
-    public Article save(NewArticleDTO body, MultipartFile img, MultipartFile pdf, Admin currentAdmin) throws IOException {
+    public Article save(NewArticleDTO body, MultipartFile[] img, MultipartFile[] pdf, Admin currentAdmin) throws IOException {
         Article newArticle = new Article();
 
         newArticle.setAuthor(currentAdmin);
         newArticle.setContent(body.content());
         newArticle.setTitle(body.title());
         // todo not proud of this either
-        if (body.eventDate() != null && !body.eventDate().isEmpty()) {
-            newArticle.setEventDate(LocalDate.parse(body.eventDate()));
+        if (body.eventDate() != null) {
+            newArticle.setEventDate(body.eventDate());
         } else {
             newArticle.setEventDate(null);
         }
@@ -88,20 +88,34 @@ public class ArticlesService implements IArticlesDAO {
             }
         });
         newArticle.setTags(tagsToAdd);
-        if (img != null) {
-            newArticle.setImg((String) cloudinary.uploader().upload(img.getBytes(), ObjectUtils.emptyMap()).get("url"));
+        if (img != null && img.length > 0) {
+            List<String> imgUrls = new ArrayList<>();
+
+            for (MultipartFile file : img) {
+                if (!file.isEmpty()) {
+                    imgUrls.add(((String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url")));
+                }
+            }
+            newArticle.setImg(imgUrls.toArray(new String[0]));
         }
-        if (pdf != null) {
-            newArticle.setPdf((String) cloudinary.uploader().upload(pdf.getBytes(),
-                    ObjectUtils.asMap("resource_type", "auto", "format", "pdf")).get("url"));
+        if (pdf != null && pdf.length > 0) {
+            List<String> pdfUrls = new ArrayList<>();
+
+            for (MultipartFile file : pdf) {
+                if (!file.isEmpty()) {
+                    pdfUrls.add(((String) cloudinary.uploader().upload(file.getBytes(),
+                            ObjectUtils.asMap("resource_type", "auto", "format", "pdf")).get("url")));
+                }
+            }
+            newArticle.setPdf(pdfUrls.toArray(new String[0]));
+        }
 //            newArticle.setPdf(cloudinary.uploader().upload(pdf.getInputStream(), ObjectUtils.asMap("resource_type", "raw")).get("url").toString());
-        }
         return articlesRepo.save(newArticle);
     }
 
     @Override
     @Transactional
-    public Article findByIdAndUpdate(UUID id, NewArticleDTO body, MultipartFile img, MultipartFile pdf) throws NotFoundException, IOException {
+    public Article findByIdAndUpdate(UUID id, NewArticleDTO body, MultipartFile[] img, MultipartFile[] pdf) throws NotFoundException, IOException {
         // TODO: only change actually modified fields
         Article found = this.findById(id);
         found.setContent(body.content());
@@ -121,12 +135,49 @@ public class ArticlesService implements IArticlesDAO {
                                 .orElseThrow(() -> new NotFoundException(tagName)))
                         .toList()
         );
-        String imgUrl = found.getImg();
-        String[] parts = imgUrl.split("/");
-        String imgId = parts[parts.length - 1].split("\\.")[0];
-        cloudinary.uploader().destroy(imgId, ObjectUtils.emptyMap());
+        // todo this
+        String[] existingImgUrls = found.getImg();
+        if (existingImgUrls != null) {
+            for (String imgUrl : existingImgUrls) {
+                String[] parts = imgUrl.split("/");
+                String imgId = parts[parts.length - 1].split("\\.")[0];
+                cloudinary.uploader().destroy(imgId, ObjectUtils.emptyMap());
+            }
+        }
+        // q what is even the point of this check?
+        if (img != null && img.length > 0) {
+            List<String> imgUrls = new ArrayList<>();
 
-        found.setImg((String) cloudinary.uploader().upload(img.getBytes(), ObjectUtils.emptyMap()).get("url"));
+            for (MultipartFile file : img) {
+                if (!file.isEmpty()) {
+                    imgUrls.add(((String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url")));
+                }
+            }
+            found.setImg(imgUrls.toArray(new String[0]));
+        } else {
+            found.setImg(null);
+        }
+        String[] existingPdfUrls = found.getPdf();
+        if (existingPdfUrls != null) {
+            for (String pdfUrl : existingPdfUrls) {
+                String[] parts = pdfUrl.split("/");
+                String pdfId = parts[parts.length - 1].split("\\.")[0];
+                cloudinary.uploader().destroy(pdfId, ObjectUtils.emptyMap());
+            }
+        }
+        if (pdf != null && pdf.length > 0) {
+            List<String> pdfUrls = new ArrayList<>();
+
+            for (MultipartFile file : pdf) {
+                if (!file.isEmpty()) {
+                    pdfUrls.add(((String) cloudinary.uploader().upload(file.getBytes(),
+                            ObjectUtils.asMap("resource_type", "auto", "format", "pdf")).get("url")));
+                }
+            }
+            found.setPdf(pdfUrls.toArray(new String[0]));
+        } else {
+            found.setPdf(null);
+        }
         return articlesRepo.save(found);
     }
 
@@ -186,9 +237,9 @@ public class ArticlesService implements IArticlesDAO {
 //    }
 
     @Override
-    public Page<Article> findByTitleContainingIgnoreCase(String query, int page, int size, String orderBy) {
+    public Page<Article> findByTitleCategoriesTagsContainingIgnoreCase(String query, int page, int size, String orderBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
-        return articlesRepo.findByTitleContainingIgnoreCase(query, pageable);
+        return articlesRepo.findByTitleCategoriesTagsContainingIgnoreCase(query, pageable);
     }
 
     @Override
@@ -197,7 +248,7 @@ public class ArticlesService implements IArticlesDAO {
     }
 
     @Override
-    public void findByIdAndDelete(UUID id) throws NotFoundException {
+    public void findByIdAndDelete(UUID id) throws NotFoundException, IOException {
         Article article = articlesRepo.findById(id).orElseThrow(() -> new NotFoundException(id));
 
         for (Category category : article.getCategories()) {
@@ -207,6 +258,26 @@ public class ArticlesService implements IArticlesDAO {
         for (Tag tag : article.getTags()) {
             tag.getArticles().remove(article);
             tagsRepo.save(tag);
+        }
+
+        // q should be empty array instead of null?
+        // q is being a web developer worse for your health than smoking?
+        String[] existingImgUrls = article.getImg();
+        if (existingImgUrls != null) {
+            for (String imgUrl : existingImgUrls) {
+                String[] parts = imgUrl.split("/");
+                String imgId = parts[parts.length - 1].split("\\.")[0];
+                cloudinary.uploader().destroy(imgId, ObjectUtils.emptyMap());
+            }
+        }
+
+        String[] existingPdfUrls = article.getPdf();
+        if (existingPdfUrls != null) {
+            for (String pdfUrl : existingPdfUrls) {
+                String[] parts = pdfUrl.split("/");
+                String pdfId = parts[parts.length - 1].split("\\.")[0];
+                cloudinary.uploader().destroy(pdfId, ObjectUtils.emptyMap());
+            }
         }
 
         articlesRepo.delete(article);

@@ -46,9 +46,10 @@ public class ArticlesController {
         return articlesService.getArticles(categoria, tag, autore, section, page, size, orderBy);
     }
 
+    //    q should need more search options?
     @GetMapping("/search")
-    public Page<Article> findByTitleContainingIgnoreCase(@RequestParam String q, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "date") String orderBy) {
-        return articlesService.findByTitleContainingIgnoreCase(q, page, size, orderBy);
+    public Page<Article> findByTitleCategoriesTagsContainingIgnoreCase(@RequestParam String q, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "date") String orderBy) {
+        return articlesService.findByTitleCategoriesTagsContainingIgnoreCase(q, page, size, orderBy);
     }
 
     @GetMapping("/coming-up")
@@ -71,8 +72,8 @@ public class ArticlesController {
     @ResponseStatus(HttpStatus.CREATED)
     public Article saveArticle(
             @RequestPart("article") @Validated String articleJson,
-            @RequestParam(value = "img", required = false) MultipartFile img,
-            @RequestParam(value = "pdf", required = false) MultipartFile pdf,
+            @RequestParam(value = "img", required = false) MultipartFile[] img,
+            @RequestParam(value = "pdf", required = false) MultipartFile[] pdf,
             @AuthenticationPrincipal Admin currentAdmin,
             BindingResult validation) {
         if (validation.hasErrors()) {
@@ -102,7 +103,7 @@ public class ArticlesController {
 
     @PutMapping(value = "/{id}", consumes = "multipart/form-data")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Article findByIdAndUpdate(@PathVariable UUID id, @RequestPart("article") @Validated String articleJson, @RequestParam(value = "img", required = false) MultipartFile img, MultipartFile pdf, BindingResult validation) {
+    public Article findByIdAndUpdate(@PathVariable UUID id, @RequestPart("article") @Validated String articleJson, @RequestParam(value = "img", required = false) MultipartFile[] img, MultipartFile[] pdf, BindingResult validation) {
         if (validation.hasErrors()) {
             throw new BadRequestException(validation.getAllErrors());
         } else {
@@ -124,7 +125,7 @@ public class ArticlesController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void findByIdAndDelete(@PathVariable UUID id) {
+    public void findByIdAndDelete(@PathVariable UUID id) throws IOException {
         articlesService.findByIdAndDelete(id);
     }
 

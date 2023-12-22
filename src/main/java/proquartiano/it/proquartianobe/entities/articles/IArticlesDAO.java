@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface IArticlesDAO {
-    public Article save(NewArticleDTO article, MultipartFile img, MultipartFile pdf, Admin currentAdmin) throws IOException;
+    public Article save(NewArticleDTO article, MultipartFile[] img, MultipartFile[] pdf, Admin currentAdmin) throws IOException;
 
-    Article findByIdAndUpdate(UUID id, NewArticleDTO body, MultipartFile img, MultipartFile pdf) throws NotFoundException, IOException;
+    Article findByIdAndUpdate(UUID id, NewArticleDTO body, MultipartFile[] img, MultipartFile[] pdf) throws NotFoundException, IOException;
 
 //    Page<Article> getArticles(String category, String tag, String author, int page, int size, String orderBy);
 
@@ -30,9 +30,9 @@ public interface IArticlesDAO {
     List<Article> getUpcomingEventsWithinOneYear();
 
     //// public List<Article> findByCategory(String categoryName);
-    public Page<Article> findByTitleContainingIgnoreCase(String query, int page, int size, String orderBy);
+    public Page<Article> findByTitleCategoriesTagsContainingIgnoreCase(String query, int page, int size, String orderBy);
 
-    public void findByIdAndDelete(UUID id);
+    public void findByIdAndDelete(UUID id) throws IOException;
 
 //    public Article findByIdAndUpdate(UUID id, NewArticleDTO article);
 
