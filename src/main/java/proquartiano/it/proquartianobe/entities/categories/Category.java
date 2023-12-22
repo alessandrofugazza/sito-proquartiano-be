@@ -5,6 +5,7 @@ import com.github.javafaker.Faker;
 import jakarta.persistence.*;
 import lombok.*;
 import proquartiano.it.proquartianobe.entities.articles.Article;
+import proquartiano.it.proquartianobe.enums.ESection;
 
 import java.util.*;
 
@@ -25,11 +26,15 @@ public class Category {
     @JsonBackReference
     private List<Article> articles;
 
-    public static class CategoryBuilder {
-        Faker fkr = new Faker();
-        private String name = fkr.book().genre();
-        private List<Article> articles = new ArrayList<>();
+    public Category(String name) {
+        this.name = name;
     }
+
+//    public static class CategoryBuilder {
+//        Faker fkr = new Faker();
+//        private String name = fkr.book().genre();
+//        private List<Article> articles = new ArrayList<>();
+//    }
 
     public void setName(String name) {
         this.name = name;
