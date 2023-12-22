@@ -22,10 +22,10 @@ public class TestRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        sectionsRepo.save(new Section(ESection.MERCATINO_LIBRI));
-        sectionsRepo.save(new Section(ESection.SAGRA));
-        sectionsRepo.save(new Section(ESection.CONCORSO_CORI));
-
-        adminsRepo.save(new Admin("AF", "alessandro.fugazza01@outlook.com", "1"));
+//        sectionsRepo.save(new Section(ESection.MERCATINO_LIBRI));
+//        sectionsRepo.save(new Section(ESection.SAGRA));
+//        sectionsRepo.save(new Section(ESection.CONCORSO_CORI));
+//
+//        adminsRepo.save(new Admin("AF", "alessandro.fugazza01@outlook.com", "1"));
     }
 }
