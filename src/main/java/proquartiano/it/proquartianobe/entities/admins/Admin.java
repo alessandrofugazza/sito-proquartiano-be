@@ -40,6 +40,14 @@ public class Admin implements UserDetails {
     @Enumerated(EnumType.STRING)
     private ERole role;
 
+    public Admin(String signature, String email, String password) {
+        this.signature = signature;
+        this.email = email;
+        this.password = password;
+        this.articles = new ArrayList<>();
+        this.role = ERole.ADMIN;
+    }
+
     public void setRole(ERole role) {
         this.role = role;
     }
