@@ -26,13 +26,13 @@ public class TestRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        sectionsRepo.save(new Section(ESection.MERCATINO_LIBRI));
-        sectionsRepo.save(new Section(ESection.SAGRA));
-        sectionsRepo.save(new Section(ESection.CONCORSO_CORI));
-        categoriesRepo.save(new Category("manifestazioni"));
-        categoriesRepo.save(new Category("associazione"));
-        categoriesRepo.save(new Category("rassegna stampa"));
-        categoriesRepo.save(new Category("concorso cori"));
+//        sectionsRepo.save(new Section(ESection.MERCATINO_LIBRI));
+//        sectionsRepo.save(new Section(ESection.SAGRA));
+//        sectionsRepo.save(new Section(ESection.CONCORSO_CORI));
+//        categoriesRepo.save(new Category("manifestazioni"));
+//        categoriesRepo.save(new Category("associazione"));
+//        categoriesRepo.save(new Category("rassegna stampa"));
+//        categoriesRepo.save(new Category("concorso cori"));
 
     }
 }
